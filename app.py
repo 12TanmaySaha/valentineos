@@ -7,233 +7,214 @@ YOUR_NAME = "Tanmay"
 st.set_page_config(page_title="PookieBear", page_icon="💗", layout="centered")
 
 # -----------------------------
-# Global CSS: pink/white, professional, real animations
+# CSS: clean, pink/white, real animations, real SVG cats
 # -----------------------------
 st.markdown(
     """
 <style>
-/* Page background */
-.stApp{
-  background: radial-gradient(1200px 800px at 20% 10%, #ffe6f1 0%, transparent 55%),
-              radial-gradient(900px 700px at 90% 30%, #fff1f7 0%, transparent 60%),
-              linear-gradient(180deg, #ffffff 0%, #fff6fa 45%, #ffeaf3 100%);
-}
+/* --- Reset Streamlit spacing --- */
+.block-container { max-width: 760px; padding-top: 34px; }
+#MainMenu, footer, header { visibility: hidden; }
 
-/* Subtle animated shimmer */
-@keyframes shimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-.shimmer {
-  background: linear-gradient(120deg, rgba(255,105,180,.10), rgba(255,255,255,0), rgba(255,105,180,.10));
-  background-size: 200% 200%;
-  animation: shimmer 8s ease-in-out infinite;
-}
+/* --- Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap');
+html, body, [class*="css"]  { font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
 
-/* Typography */
+/* --- Theme vars --- */
 :root{
-  --pink:#ff4fa3;
-  --pink2:#ff78b9;
-  --text:#2a2430;
-  --muted:#6f6477;
+  --bg1:#fff7fb;
+  --bg2:#ffeaf3;
+  --pink:#ff3f9c;
+  --pink2:#ff78bd;
+  --ink:#241a22;
+  --muted:#6f5f6a;
   --card:#ffffffcc;
-  --border:#f3c4d9;
+  --border: rgba(255, 63, 156, 0.14);
+  --shadow: 0 26px 70px rgba(255, 63, 156, 0.14);
 }
-h1,h2,h3,p,div,span,button,input{ font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-a { color: var(--pink); }
 
-/* Main card */
+/* --- Background --- */
+.stApp{
+  background: radial-gradient(1200px 700px at 15% 10%, #ffe1ef 0%, transparent 60%),
+              radial-gradient(900px 650px at 90% 25%, #ffeef6 0%, transparent 62%),
+              linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 60%, #ffffff 100%);
+}
+
+/* --- Animated blobs --- */
+@keyframes drift {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  50%  { transform: translate3d(22px,-18px,0) scale(1.06); }
+  100% { transform: translate3d(0,0,0) scale(1); }
+}
+.blob {
+  position: fixed;
+  width: 520px;
+  height: 520px;
+  border-radius: 999px;
+  filter: blur(32px);
+  opacity: 0.55;
+  z-index: 0;
+  animation: drift 10s ease-in-out infinite;
+}
+.blob.one { left: -220px; top: -200px; background: radial-gradient(circle, #ffb6d7 0%, transparent 62%); }
+.blob.two { right: -260px; top: 40px; background: radial-gradient(circle, #ffd2e7 0%, transparent 62%); animation-duration: 12s; }
+.blob.three{ left: 30%; bottom: -320px; background: radial-gradient(circle, #ffc0dd 0%, transparent 62%); animation-duration: 14s; }
+
+/* --- Card layout --- */
+.shell { position: relative; z-index: 2; }
 .card{
   position: relative;
-  border: 1px solid rgba(243,196,217,.8);
   background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 26px;
-  padding: 26px;
-  box-shadow: 0 22px 60px rgba(255, 79, 163, 0.14);
+  padding: 28px;
+  box-shadow: var(--shadow);
   overflow: hidden;
+  backdrop-filter: blur(10px);
 }
 .card::before{
   content:"";
   position:absolute; inset:-2px;
-  border-radius: 28px;
-  background: radial-gradient(400px 140px at 20% 0%, rgba(255,79,163,.18), transparent 60%),
-              radial-gradient(380px 160px at 90% 20%, rgba(255,120,185,.14), transparent 60%);
+  background: radial-gradient(520px 180px at 15% 0%, rgba(255, 63, 156, 0.16), transparent 60%),
+              radial-gradient(420px 160px at 92% 20%, rgba(255, 120, 189, 0.12), transparent 60%);
   pointer-events:none;
 }
 
-/* Header */
+/* --- Header --- */
+.toprow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
 .brand{
   display:flex; align-items:center; gap:10px;
-  font-weight: 800; letter-spacing: -0.4px;
-  color: var(--text);
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.4px;
 }
-.badge{
+.pill{
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(243,196,217,.9);
-  background: rgba(255,255,255,.65);
+  border: 1px solid rgba(255, 63, 156, 0.18);
+  background: rgba(255,255,255,0.75);
   color: var(--muted);
 }
 .title{
   font-size: 40px;
-  line-height: 1.05;
-  margin: 14px 0 6px 0;
-  letter-spacing: -1px;
-  color: var(--text);
+  line-height: 1.06;
+  letter-spacing: -1.1px;
+  color: var(--ink);
+  margin: 6px 0 10px 0;
 }
 .subtitle{
   font-size: 16px;
-  margin: 0 0 14px 0;
+  line-height: 1.55;
   color: var(--muted);
+  margin: 0 0 18px 0;
 }
 
-/* Buttons: override Streamlit */
+/* --- Buttons (Streamlit) --- */
 div.stButton > button{
   width: 100%;
-  height: 58px;
-  border-radius: 16px;
+  height: 60px;
+  border-radius: 18px;
   font-size: 18px;
   font-weight: 800;
-  border: 1px solid rgba(243,196,217,.95);
-  background: rgba(255,255,255,.9);
-  color: var(--text);
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-  box-shadow: 0 10px 26px rgba(255, 79, 163, 0.10);
+  border: 1px solid rgba(36,26,34,0.10);
+  background: rgba(255,255,255,0.9);
+  color: var(--ink);
+  transition: transform .12s ease, box-shadow .12s ease;
+  box-shadow: 0 14px 34px rgba(255, 63, 156, 0.10);
 }
 div.stButton > button:hover{
   transform: translateY(-1px);
-  background: rgba(255,255,255,1);
-  box-shadow: 0 14px 34px rgba(255, 79, 163, 0.16);
+  box-shadow: 0 18px 46px rgba(255, 63, 156, 0.16);
 }
-div.stButton > button:active{
-  transform: translateY(0px) scale(0.99);
-}
+div.stButton > button:active{ transform: translateY(0px) scale(0.99); }
 
-/* Primary YES button (bigger, professional) */
-.primaryWrap div.stButton > button{
+/* Primary YES */
+.primary div.stButton > button{
   background: linear-gradient(135deg, var(--pink) 0%, var(--pink2) 100%) !important;
   color: white !important;
   border: none !important;
-  height: 64px !important;
+  height: 66px !important;
   font-size: 20px !important;
-  box-shadow: 0 18px 44px rgba(255, 79, 163, 0.28) !important;
+  box-shadow: 0 22px 60px rgba(255, 63, 156, 0.28) !important;
 }
-.primaryWrap div.stButton > button:hover{
-  box-shadow: 0 22px 56px rgba(255, 79, 163, 0.34) !important;
+.primary div.stButton > button:hover{
+  box-shadow: 0 26px 70px rgba(255, 63, 156, 0.34) !important;
 }
 
-/* Cat bubbles (real CSS animation, no emoji spam) */
-@keyframes floatUp {
-  0%   { transform: translateY(40px) translateX(0) scale(0.95); opacity: 0; }
-  15%  { opacity: .85; }
-  100% { transform: translateY(-520px) translateX(18px) scale(1.10); opacity: 0; }
+/* Grid row */
+.grid{
+  display:grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 16px;
+  margin-top: 6px;
 }
-.catBubble{
-  position: fixed;
-  bottom: -60px;
-  width: 54px;
-  height: 54px;
-  border-radius: 999px;
-  background: rgba(255, 79, 163, 0.10);
-  border: 1px solid rgba(255, 79, 163, 0.18);
-  box-shadow: 0 18px 40px rgba(255, 79, 163, 0.10);
+.note{
+  font-size: 13px;
+  color: rgba(111,95,106,0.95);
+  margin-top: 8px;
+}
+
+/* Cute cat SVG holder */
+.catbadge{
+  width:44px; height:44px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 63, 156, 0.16);
+  background: rgba(255,255,255,0.8);
   display:flex; align-items:center; justify-content:center;
-  animation: floatUp linear infinite;
-  z-index: 0;
-  backdrop-filter: blur(4px);
 }
-.catFace{
-  width: 22px; height: 18px; position: relative;
-  border-radius: 10px;
-  border: 2px solid rgba(42,36,48,.45);
-  background: rgba(255,255,255,.9);
-}
-.catEarL,.catEarR{
-  position:absolute; top:-8px; width:10px; height:10px;
-  background: rgba(255,255,255,.9);
-  border-left:2px solid rgba(42,36,48,.45);
-  border-top:2px solid rgba(42,36,48,.45);
-  transform: rotate(45deg);
-}
-.catEarL{ left:2px; }
-.catEarR{ right:2px; }
-.catEyeL,.catEyeR{
-  position:absolute; top:6px; width:4px; height:4px;
-  background: rgba(42,36,48,.55); border-radius: 999px;
-}
-.catEyeL{ left:6px; }
-.catEyeR{ right:6px; }
-.catNose{
-  position:absolute; top:10px; left:50%;
-  width:6px; height:4px; transform: translateX(-50%);
-  background: rgba(255, 79, 163, .55);
-  border-radius: 2px 2px 6px 6px;
-}
-.catWhL,.catWhR{
-  position:absolute; top:10px; width:10px; height:1px;
-  background: rgba(42,36,48,.35);
-}
-.catWhL{ left:-10px; transform: rotate(8deg); }
-.catWhR{ right:-10px; transform: rotate(-8deg); }
-
-/* Keep everything above bubbles */
-.block-container{ position: relative; z-index: 2; max-width: 720px; padding-top: 26px; }
 </style>
 
-<!-- Cat bubbles: few, classy, animated -->
-<div class="catBubble" style="left: 8%; animation-duration: 10s; animation-delay: 0s;">
-  <div class="catFace">
-    <div class="catEarL"></div><div class="catEarR"></div>
-    <div class="catEyeL"></div><div class="catEyeR"></div>
-    <div class="catNose"></div><div class="catWhL"></div><div class="catWhR"></div>
-  </div>
-</div>
-<div class="catBubble" style="left: 22%; animation-duration: 12s; animation-delay: 2s;">
-  <div class="catFace">
-    <div class="catEarL"></div><div class="catEarR"></div>
-    <div class="catEyeL"></div><div class="catEyeR"></div>
-    <div class="catNose"></div><div class="catWhL"></div><div class="catWhR"></div>
-  </div>
-</div>
-<div class="catBubble" style="left: 65%; animation-duration: 11s; animation-delay: 1s;">
-  <div class="catFace">
-    <div class="catEarL"></div><div class="catEarR"></div>
-    <div class="catEyeL"></div><div class="catEyeR"></div>
-    <div class="catNose"></div><div class="catWhL"></div><div class="catWhR"></div>
-  </div>
-</div>
-<div class="catBubble" style="left: 82%; animation-duration: 13s; animation-delay: 3s;">
-  <div class="catFace">
-    <div class="catEarL"></div><div class="catEarR"></div>
-    <div class="catEyeL"></div><div class="catEyeR"></div>
-    <div class="catNose"></div><div class="catWhL"></div><div class="catWhR"></div>
-  </div>
-</div>
+<div class="blob one"></div>
+<div class="blob two"></div>
+<div class="blob three"></div>
 """,
     unsafe_allow_html=True,
 )
+
+CAT_SVG = """
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+  <path d="M6.3 10.2 4.4 6.6c-.2-.4.2-.9.7-.8l3.4.8M17.7 10.2l1.9-3.6c.2-.4-.2-.9-.7-.8l-3.4.8"
+        stroke="#241a22" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M6.8 12.6c0-3.1 2.5-5.6 5.6-5.6s5.6 2.5 5.6 5.6v2.1c0 2.9-2.3 5.2-5.2 5.2h-.8c-2.9 0-5.2-2.3-5.2-5.2v-2.1Z"
+        fill="white" stroke="#241a22" stroke-width="1.5"/>
+  <circle cx="10" cy="13" r="1" fill="#241a22"/>
+  <circle cx="14" cy="13" r="1" fill="#241a22"/>
+  <path d="M12 14.4c.7 0 1.2.5 1.2 1.2S12.7 16.8 12 16.8 10.8 16.3 10.8 15.6 11.3 14.4 12 14.4Z"
+        fill="#ff3f9c" opacity=".55"/>
+  <path d="M8.2 15.5H6.3M8.3 16.7H6.5M15.8 15.5h1.9M15.7 16.7h1.8"
+        stroke="#241a22" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+</svg>
+"""
 
 # -----------------------------
 # State
 # -----------------------------
 if "stage" not in st.session_state:
     st.session_state.stage = "boot"
-if "no_count" not in st.session_state:
-    st.session_state.no_count = 0
-
 
 def boot_screen():
     st.markdown(
         f"""
-<div class="card shimmer">
-  <div class="brand">
-    <div style="font-size:18px;">PookieBear</div>
-    <span class="badge">valentine edition</span>
+<div class="shell">
+  <div class="card">
+    <div class="toprow">
+      <div class="brand">
+        <div class="catbadge">{CAT_SVG}</div>
+        <div>PookieBear</div>
+      </div>
+      <div class="pill">valentine edition</div>
+    </div>
+
+    <div class="title">Loading something cute…</div>
+    <div class="subtitle">Preparing one important question for <b>{GF_NAME}</b>.</div>
   </div>
-  <div class="title">Loading something cute…</div>
-  <p class="subtitle">Preparing one important question for <b>{GF_NAME}</b>.</p>
 </div>
 """,
         unsafe_allow_html=True,
@@ -241,164 +222,183 @@ def boot_screen():
 
     p = st.progress(0)
     for i in range(100):
-        time.sleep(0.012)
+        time.sleep(0.010)
         p.progress(i + 1)
 
     if st.button("Continue"):
         st.session_state.stage = "question"
         st.rerun()
 
-
 def question_screen():
     st.markdown(
         f"""
-<div class="card">
-  <div class="brand">
-    <div style="font-size:18px;">PookieBear</div>
-    <span class="badge">secure • cute • serious</span>
+<div class="shell">
+  <div class="card">
+    <div class="toprow">
+      <div class="brand">
+        <div class="catbadge">{CAT_SVG}</div>
+        <div>PookieBear</div>
+      </div>
+      <div class="pill">pink • clean • serious</div>
+    </div>
+
+    <div class="title">{GF_NAME}, will you be my Valentine?</div>
+    <div class="subtitle">No pressure. But the “no” option may behave… oddly.</div>
+
+    <div class="grid">
+      <div id="yes-slot"></div>
+      <div id="no-slot"></div>
+    </div>
+
+    <div class="note">Tip: the “no” button is shy and refuses accountability.</div>
   </div>
-  <div class="title">{GF_NAME}, will you be my Valentine?</div>
-  <p class="subtitle">Be honest. But also… choose wisely.</p>
 </div>
 """,
         unsafe_allow_html=True,
     )
 
-    # Layout: Big YES + interactive NO (escaping button)
-    c1, c2 = st.columns([1, 1], gap="large")
+    # Put YES button in first column (Streamlit)
+    c1, c2 = st.columns([1.15, 0.85], gap="large")
     with c1:
-        st.markdown('<div class="primaryWrap">', unsafe_allow_html=True)
-        if st.button("Yes"):
+        st.markdown('<div class="primary">', unsafe_allow_html=True)
+        if st.button("Yes, be my Valentine"):
             st.session_state.stage = "yes"
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-        st.caption("This is the correct option.")
-
     with c2:
-        # Escaping NO button with more “creative” behaviors
-        # NOTE: This is front-end only; it’s meant for the gag.
+        # Real moving NO button (JS), styled to match the card
         st.components.v1.html(
             """
-<div style="position:relative; height:170px; border-radius:18px; background:rgba(255,255,255,.8);
-            border:1px solid rgba(243,196,217,.95); box-shadow:0 10px 26px rgba(255,79,163,.10);
-            overflow:hidden; padding:14px;">
-  <div style="font-weight:800; color:rgba(42,36,48,.80); margin-bottom:10px;">Or… this one (if you can catch it)</div>
-  <button id="noBtn"
-    style="
-      position:absolute;
-      left: 30%;
-      top: 55%;
-      padding: 14px 18px;
-      font-size: 16px;
-      font-weight: 800;
-      border-radius: 14px;
-      border: 1px solid rgba(243,196,217,.95);
-      background: rgba(255, 200, 220, .55);
-      color: rgba(42,36,48,.85);
-      cursor: pointer;
-      transition: transform .12s ease, opacity .18s ease, filter .18s ease;
-    "
-  >No</button>
+<div style="
+  position: relative;
+  height: 76px;
+  border-radius: 18px;
+  border: 1px solid rgba(36,26,34,0.10);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 14px 34px rgba(255, 63, 156, 0.10);
+  overflow: hidden;
+">
+  <button id="noBtn" style="
+    position:absolute;
+    left: 18%;
+    top: 10px;
+    height: 56px;
+    padding: 0 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 63, 156, 0.22);
+    background: rgba(255, 63, 156, 0.08);
+    font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    font-weight: 800;
+    font-size: 16px;
+    color: rgba(36,26,34,0.92);
+    cursor: pointer;
+    transition: transform .12s ease, opacity .18s ease, filter .18s ease;
+  ">No</button>
 
-  <div id="noMsg" style="position:absolute; left:14px; bottom:12px; font-size:13px; color:rgba(111,100,119,.95);">
-    Hint: try hovering.
-  </div>
+  <div id="status" style="
+    position:absolute; left:12px; bottom:8px;
+    font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    font-size: 12px; color: rgba(111,95,106,0.95);
+  ">Hover to try.</div>
 </div>
 
 <script>
 (function(){
   const btn = document.getElementById("noBtn");
-  const msg = document.getElementById("noMsg");
+  const status = document.getElementById("status");
   let tries = 0;
 
-  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+  function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+  function rand(min,max){ return Math.random()*(max-min)+min; }
 
-  function teleport(){
-    const x = Math.random()*70 + 10;
-    const y = Math.random()*55 + 25;
+  function move(){
+    // keep inside container
+    const x = rand(8, 62);  // percent
     btn.style.left = x + "%";
-    btn.style.top  = y + "%";
+    btn.style.top  = "10px";
   }
 
-  function taunt(){
-    const lines = [
-      "Nice try.",
-      "Too slow.",
-      "That option is under maintenance.",
-      "This button is for decoration.",
-      "Try the other button."
+  function setText(){
+    const t = [
+      "Not today.",
+      "Nope.",
+      "That’s not available.",
+      "Please choose the other button.",
+      "This option has left the chat."
     ];
-    msg.textContent = lines[Math.min(tries, lines.length-1)];
+    status.textContent = t[Math.min(tries, t.length-1)];
   }
 
   function escalate(){
-    // Escalation: shrink -> blur -> fade -> vanish
+    // progressively harder to click
     if(tries === 1){
-      btn.style.transform = "scale(0.92)";
       btn.textContent = "Nope";
+      btn.style.transform = "scale(0.92)";
     } else if(tries === 2){
-      btn.style.transform = "scale(0.84) rotate(-2deg)";
       btn.textContent = "Still no";
+      btn.style.transform = "scale(0.84) rotate(-2deg)";
     } else if(tries === 3){
+      btn.textContent = "…";
       btn.style.filter = "blur(1.2px)";
       btn.style.transform = "scale(0.76) rotate(2deg)";
-      btn.textContent = "??";
     } else if(tries === 4){
-      btn.style.opacity = "0.55";
+      btn.style.opacity = "0.45";
       btn.style.transform = "scale(0.68)";
-      btn.textContent = "…";
-      msg.textContent = "Ok, it’s getting shy.";
+      btn.textContent = "";
     } else if(tries >= 5){
       btn.style.opacity = "0";
       btn.style.pointerEvents = "none";
-      msg.textContent = "No option has left the chat.";
     }
   }
 
-  // Run away from cursor: also reacts to near-miss
   btn.addEventListener("mouseenter", ()=>{
     tries = clamp(tries + 1, 0, 99);
-    teleport();
-    taunt();
-    escalate();
+    move(); setText(); escalate();
   });
 
-  // If clicked, it panics harder
   btn.addEventListener("click", ()=>{
     tries = clamp(tries + 2, 0, 99);
-    teleport();
-    taunt();
-    escalate();
+    move(); setText(); escalate();
   });
 
-  // initial teleport so it feels alive
-  setTimeout(teleport, 350);
+  setTimeout(move, 200);
 })();
 </script>
 """,
-            height=190,
+            height=92,
         )
 
-
 def yes_screen():
-    st.balloons()
     st.markdown(
         f"""
-<div class="card shimmer">
-  <div class="brand">
-    <div style="font-size:18px;">PookieBear</div>
-    <span class="badge">confirmed</span>
-  </div>
-  <div class="title">Okay. That’s a yes.</div>
-  <p class="subtitle"><b>{GF_NAME}</b> just made <b>{YOUR_NAME}</b> extremely happy.</p>
+<div class="shell">
+  <div class="card">
+    <div class="toprow">
+      <div class="brand">
+        <div class="catbadge">{CAT_SVG}</div>
+        <div>PookieBear</div>
+      </div>
+      <div class="pill">confirmed</div>
+    </div>
 
-  <div style="margin-top:14px; padding:14px; border-radius:18px; background: rgba(255,255,255,.75);
-              border:1px solid rgba(243,196,217,.95); color: rgba(42,36,48,.86);">
-    Plan: Feb 14 • all day • you + me
-  </div>
+    <div class="title">It’s a yes.</div>
+    <div class="subtitle"><b>{GF_NAME}</b> just made <b>{YOUR_NAME}</b> extremely happy.</div>
 
-  <p class="subtitle" style="margin-top:14px;">Send me a screenshot 😌</p>
+    <div style="
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 63, 156, 0.16);
+      background: rgba(255, 255, 255, 0.86);
+      color: rgba(36,26,34,0.92);
+      font-weight: 700;
+    ">
+      Feb 14 • all day • you + me
+    </div>
+
+    <div class="note" style="margin-top:14px;">Send me a screenshot.</div>
+  </div>
 </div>
 """,
         unsafe_allow_html=True,
@@ -407,7 +407,6 @@ def yes_screen():
     if st.button("Replay"):
         st.session_state.stage = "boot"
         st.rerun()
-
 
 # -----------------------------
 # Router
