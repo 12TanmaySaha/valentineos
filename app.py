@@ -97,8 +97,9 @@ def inject_styles() -> None:
       left: 0;
       width: 100%;
       height: 100%;
+      /* place hearts behind the rest of the app */
       pointer-events: none;
-      z-index: 0;
+      z-index: -1;
     }}
     .heart {{
       position: absolute;
@@ -243,7 +244,7 @@ def build_letter() -> str:
 
     return (
         f"Hey {nick},\n\n"
-        f"I made this because I wanted to do something cute for you — the kind of cute that's a little embarrassing, but in a good way.\n\n"
+        f"I made this because I wanted to do something cute for you - the kind of cute that's a little embarrassing, but in a good way.\n\n"
         f"I still remember my first impression: {first}\n"
         f"My favourite moment: {moment}\n"
         f"And one thing I genuinely love about you: {love}\n\n"
@@ -354,10 +355,10 @@ def page_boot():
 
     # Simple loading messages as before, but with shorter wait to keep users engaged.
     msgs = [
-        "checking if your smile is online… ✅",
-        "warming up the cute stuff…",
-        "loading tiny butterflies…",
-        "setting the 'no' button to hard mode…",
+        "checking if your smile is online... ✅",
+        "warming up the cute stuff...",
+        "loading tiny butterflies...",
+        "setting the 'no' button to hard mode...",
         "almost done. don't blink."
     ]
     spot = st.empty()
@@ -551,9 +552,11 @@ def page_final():
     st.markdown("<div class='hr'></div>", unsafe_allow_html=True)
     st.markdown("</div></div>", unsafe_allow_html=True)
 
+    # Display the main question heading.  Use a single string literal so there are no
+    # stray empty strings that could confuse the rendering engine.
     st.markdown(
-        "<h1 style='margin-top:12px; font-size:54px; font-weight:800; color:var(--cocoa); letter-spacing:-1.4px;'>"
-        "Will you be my Valentine?""</h1>",
+        "<h1 style='margin-top:12px; font-size:54px; font-weight:800; "
+        "color:var(--cocoa); letter-spacing:-1.4px;'>Will you be my Valentine?</h1>",
         unsafe_allow_html=True
     )
     st.markdown("<p class='sub'>the 'no' button will try. it will fail.</p>", unsafe_allow_html=True)
