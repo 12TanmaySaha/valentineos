@@ -1,3 +1,1 @@
 streamlit>=1.31
-streamlit-lottie>=0.0.3
-requests>=2.25
