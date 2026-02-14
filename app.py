@@ -31,6 +31,11 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import cm
 
+# Configure the Streamlit page before any other Streamlit calls.  This must
+# happen prior to injecting CSS or using other st.* functions.  See
+# https://discuss.streamlit.io/t/setting-page-config/ for details.
+st.set_page_config(page_title="💗 Valentine", page_icon="💗", layout="centered")
+
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -636,7 +641,7 @@ position:relative;overflow:hidden;padding:14px;">
 
 def main() -> None:
     """Entry point for the app."""
-    st.set_page_config(page_title="💗 Valentine", page_icon="💗", layout="centered")
+    # initialise state (page config was already set at import time)
     init_state()
     inject_css()
     page_idx = st.session_state.step
