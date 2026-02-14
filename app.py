@@ -304,7 +304,7 @@ elif st.session_state.step == 1:
         """
 You make my days feel lighter.
 
-Not in a loud way — in a calm, safe, *I can breathe* kind of way.
+Not in a loud way in a calm, safe, *I can breathe* kind of way.
 
 So I made this… because you deserve a moment that feels special.
 """,
