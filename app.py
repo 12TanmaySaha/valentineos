@@ -90,42 +90,6 @@ def inject_styles() -> None:
       overflow: hidden;
     }}
 
-    /* Floating hearts container */
-    .heart-container {{
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      /* place hearts behind the rest of the app */
-      pointer-events: none;
-      z-index: -1;
-    }}
-    .heart {{
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: var(--raspberry);
-      transform: rotate(45deg);
-      opacity: 0.7;
-    }}
-    .heart::before,
-    .heart::after {{
-      content: "";
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: var(--raspberry);
-      border-radius: 50%;
-    }}
-    .heart::before {{ top: -10px; left: 0; }}
-    .heart::after {{ left: -10px; top: 0; }}
-    /* Create varying animations */
-    @keyframes float {{
-      0% {{ transform: translateY(0) scale(1); opacity:0; }}
-      10% {{ opacity:0.8; }}
-      100% {{ transform: translateY(-120vh) scale(1.6); opacity:0; }}
-    }}
 
     /* Card styling */
     .shell {{ position: relative; z-index: 1; }}
@@ -186,16 +150,11 @@ def inject_styles() -> None:
     """
     st.markdown(css, unsafe_allow_html=True)
 
-    # Inject hearts via a custom component.  We use random positions and delays
-    # from within Python to generate hearts so they don't all animate in sync.
-    hearts_html = [
-        f"<div class='heart' style='left:{random.randint(0,95)}%; top:{100 + i*5}%; animation: float {random.randint(8,14)}s infinite {i*1.5}s;'></div>"
-        for i in range(10)
-    ]
-    st.markdown(
-        f"<div class='heart-container'>{''.join(hearts_html)}</div>",
-        unsafe_allow_html=True
-    )
+    # Note: previously we injected floating hearts here.  They looked cute but
+    # interfered with the layout in some environments.  The hearts have been
+    # removed to ensure the rest of the UI renders reliably.  If you wish to
+    # re-add them, generate `hearts_html` as before and call st.markdown() to
+    # insert a `<div class='heart-container'>...</div>` after this CSS.
 
 
 # ----- State management -----
