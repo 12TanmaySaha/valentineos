@@ -2,13 +2,20 @@ import random
 import time
 import textwrap
 import streamlit as st
+from io import BytesIO
+
+# PDF generation
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import cm
+
 
 GF_NAME = "Dipika"
 YOUR_NAME = "Tanmay"
 
 st.set_page_config(page_title="PookieBear Experience", page_icon="🐾", layout="centered")
 
-# ---------- CSS (strong overrides for Streamlit widgets) ----------
+# ---------- CSS ----------
 st.markdown(textwrap.dedent("""
 <style>
 #MainMenu, footer, header {visibility:hidden;}
@@ -92,7 +99,6 @@ st.markdown(textwrap.dedent("""
 .kpi .k{font-size:12px; color:var(--muted);}
 .kpi .v{font-size:16px; font-weight:900; color:var(--ink); margin-top:2px;}
 
-/* Buttons */
 div.stButton > button{
   width:100%;
   height:56px;
@@ -117,9 +123,8 @@ div.stButton > button:hover{
   box-shadow: 0 22px 60px rgba(255,63,156,0.28) !important;
 }
 
-/* Inputs: force light look */
 label, .stMarkdown, .stText, p, span, div { color: var(--ink); }
-.stTextInput input{
+.stTextInput input, .stTextArea textarea{
   background: rgba(255,255,255,0.96) !important;
   color: var(--ink) !important;
   border-radius: 14px !important;
@@ -154,7 +159,8 @@ CAT_SVG = """
 </svg>
 """
 
-STEPS = ["Boot", "Pookie Passport", "Compatibility", "Pinky Promise", "Final Question"]
+# 6 steps now
+STEPS = ["Boot", "Pookie Passport", "Compatibility", "Pinky Promise", "Memory Lane", "Final Question"]
 
 def init_state():
     st.session_state.setdefault("step", 0)
@@ -162,9 +168,10 @@ def init_state():
     st.session_state.setdefault("quiz_done", False)
     st.session_state.setdefault("quiz_score", 0)
     st.session_state.setdefault("promise_ideas", [])
+    st.session_state.setdefault("memory", {"first_impression":"", "fav_moment":"", "one_thing":"", "saved":False})
     st.session_state.setdefault("final_yes", False)
 
-def go(i):
+def go(i: int):
     st.session_state.step = max(0, min(i, len(STEPS)-1))
     st.rerun()
 
@@ -173,12 +180,13 @@ def stepper():
     for i in range(len(STEPS)):
         dots.append(f"<span class='stepDot {'on' if i<=st.session_state.step else ''}'></span>")
     st.markdown(
-        f"<div class='stepper'>{''.join(dots)}<span class='stepLabel'>{STEPS[st.session_state.step]} ({st.session_state.step+1}/{len(STEPS)})</span></div>",
+        f"<div class='stepper'>{''.join(dots)}"
+        f"<span class='stepLabel'>{STEPS[st.session_state.step]} ({st.session_state.step+1}/{len(STEPS)})</span></div>",
         unsafe_allow_html=True
     )
     st.progress((st.session_state.step+1)/len(STEPS))
 
-def card_open(pill):
+def card_open(pill: str):
     st.markdown(textwrap.dedent(f"""
     <div class="shell"><div class="card"><div class="pad">
       <div class="toprow">
@@ -194,12 +202,114 @@ def card_open(pill):
 def card_close():
     st.markdown("</div></div></div>", unsafe_allow_html=True)
 
+def build_letter() -> str:
+    nick = st.session_state.passport["nickname"].strip() or GF_NAME
+    vibe = st.session_state.passport["vibe"] or "soft"
+    snack = st.session_state.passport["fav_snack"].strip() or "something sweet"
+    plan = ", ".join(st.session_state.promise_ideas) if st.session_state.promise_ideas else "something we decide together"
+
+    m = st.session_state.memory
+    first = (m["first_impression"].strip() or "you immediately felt different in the best way")
+    moment = (m["fav_moment"].strip() or "a moment that made me quietly smile all day")
+    one = (m["one_thing"].strip() or "how safe it feels being around you")
+
+    return (
+        f"Hey {nick},\n\n"
+        f"I made this tiny app because I wanted you to smile.\n\n"
+        f"My first impression: {first}.\n"
+        f"My favorite moment: {moment}.\n"
+        f"One thing I love about you: {one}.\n\n"
+        f"For Valentine’s, I’m promising a {vibe} day — with {plan} — and a bonus: {snack}.\n\n"
+        f"From,\n{YOUR_NAME}"
+    )
+
+def make_certificate_pdf(letter_text: str) -> bytes:
+    # Simple, robust PDF certificate (no custom fonts required)
+    buf = BytesIO()
+    c = canvas.Canvas(buf, pagesize=A4)
+    w, h = A4
+
+    # Border
+    margin = 1.6 * cm
+    c.setLineWidth(2)
+    c.setStrokeColorRGB(1.0, 0.25, 0.61)  # pink-ish
+    c.roundRect(margin, margin, w - 2*margin, h - 2*margin, 18, stroke=1, fill=0)
+
+    # Header
+    c.setFillColorRGB(0.14, 0.10, 0.13)
+    c.setFont("Helvetica-Bold", 24)
+    c.drawCentredString(w/2, h - 3.1*cm, "Valentine Certificate")
+
+    c.setFont("Helvetica", 12)
+    c.setFillColorRGB(0.43, 0.37, 0.41)
+    c.drawCentredString(w/2, h - 3.9*cm, "Issued by PookieBear Experience")
+
+    # Names
+    c.setFillColorRGB(0.14, 0.10, 0.13)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawCentredString(w/2, h - 5.2*cm, f"{YOUR_NAME}  ↔  {GF_NAME}")
+
+    c.setFont("Helvetica", 11)
+    c.setFillColorRGB(0.30, 0.26, 0.29)
+    c.drawCentredString(w/2, h - 6.0*cm, "This certificate confirms an official Valentine agreement.")
+
+    # Letter box
+    box_x = 2.2 * cm
+    box_y = 4.0 * cm
+    box_w = w - 4.4 * cm
+    box_h = h - 11.0 * cm
+    c.setLineWidth(1)
+    c.setStrokeColorRGB(1.0, 0.55, 0.74)
+    c.setFillColorRGB(1.0, 0.97, 0.99)
+    c.roundRect(box_x, box_y, box_w, box_h, 14, stroke=1, fill=1)
+
+    # Write wrapped text
+    c.setFillColorRGB(0.14, 0.10, 0.13)
+    c.setFont("Helvetica", 11)
+
+    lines = []
+    for para in letter_text.split("\n"):
+        if not para.strip():
+            lines.append("")
+            continue
+        # naive wrap
+        words = para.split()
+        cur = ""
+        for w0 in words:
+            trial = (cur + " " + w0).strip()
+            if c.stringWidth(trial, "Helvetica", 11) <= box_w - 1.2*cm:
+                cur = trial
+            else:
+                lines.append(cur)
+                cur = w0
+        if cur:
+            lines.append(cur)
+
+    x = box_x + 0.6*cm
+    y = box_y + box_h - 0.9*cm
+    line_h = 14
+    for ln in lines:
+        if y < box_y + 0.8*cm:
+            break
+        c.drawString(x, y, ln)
+        y -= line_h
+
+    # Footer
+    c.setFillColorRGB(0.43, 0.37, 0.41)
+    c.setFont("Helvetica-Oblique", 10)
+    c.drawCentredString(w/2, margin + 0.9*cm, "Screenshot optional. Happiness mandatory.")
+
+    c.showPage()
+    c.save()
+    return buf.getvalue()
+
+
 init_state()
 
 # ---------- STEP 1 ----------
 if st.session_state.step == 0:
     card_open("pink • clean • safe")
-    st.markdown(f"<div class='title'>A small experience, for one person.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='title'>A small experience, for one person.</div>", unsafe_allow_html=True)
     st.markdown(f"<div class='subtitle'>This is a private little app designed for <b>{GF_NAME}</b>. It ends with one question.</div>", unsafe_allow_html=True)
     stepper()
     card_close()
@@ -235,10 +345,18 @@ elif st.session_state.step == 1:
     with st.form("passport"):
         st.session_state.passport["nickname"] = st.text_input("What do I call you?", value=st.session_state.passport["nickname"])
         st.session_state.passport["fav_snack"] = st.text_input("Your comfort snack", value=st.session_state.passport["fav_snack"])
-        st.session_state.passport["fav_color"] = st.selectbox("Favorite color", ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"],
-                                                             index=max(0, ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"].index(st.session_state.passport["fav_color"]) if st.session_state.passport["fav_color"] in ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"] else 0))
-        st.session_state.passport["vibe"] = st.selectbox("Today’s vibe", ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"],
-                                                        index=max(0, ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"].index(st.session_state.passport["vibe"]) if st.session_state.passport["vibe"] in ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"] else 0))
+        st.session_state.passport["fav_color"] = st.selectbox(
+            "Favorite color",
+            ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"],
+            index=max(0, ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"].index(st.session_state.passport["fav_color"])
+                      if st.session_state.passport["fav_color"] in ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"] else 0)
+        )
+        st.session_state.passport["vibe"] = st.selectbox(
+            "Today’s vibe",
+            ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"],
+            index=max(0, ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"].index(st.session_state.passport["vibe"])
+                      if st.session_state.passport["vibe"] in ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"] else 0)
+        )
         saved = st.form_submit_button("Save passport")
 
     if saved:
@@ -319,7 +437,12 @@ elif st.session_state.step == 3:
     chosen = ", ".join(st.session_state.promise_ideas) if st.session_state.promise_ideas else "to be decided together"
 
     st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='small'><b>Pookie Contract</b><br>I, {YOUR_NAME}, agree to deliver a <b>{vibe}</b> day for <b>{nick}</b>.<br>Chosen plan: <b>{chosen}</b>.</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='small'><b>Pookie Contract</b><br>"
+        f"I, {YOUR_NAME}, agree to deliver a <b>{vibe}</b> day for <b>{nick}</b>.<br>"
+        f"Chosen plan: <b>{chosen}</b>.</div>",
+        unsafe_allow_html=True
+    )
 
     card_close()
     c1, c2 = st.columns(2)
@@ -330,7 +453,59 @@ elif st.session_state.step == 3:
         if st.button("Continue"):
             go(4)
 
-# ---------- STEP 5 ----------
+# ---------- STEP 5: Memory Lane ----------
+elif st.session_state.step == 4:
+    card_open("step 5")
+    st.markdown("<div class='title'>Memory Lane</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Three tiny prompts. These become the final letter card.</div>", unsafe_allow_html=True)
+    stepper()
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+
+    with st.form("memory"):
+        st.session_state.memory["first_impression"] = st.text_area(
+            "My first impression of you was…",
+            value=st.session_state.memory["first_impression"],
+            height=80,
+            placeholder="e.g., your smile made everything feel lighter"
+        )
+        st.session_state.memory["fav_moment"] = st.text_area(
+            "My favorite moment with you is…",
+            value=st.session_state.memory["fav_moment"],
+            height=80,
+            placeholder="e.g., that day we laughed for no reason"
+        )
+        st.session_state.memory["one_thing"] = st.text_area(
+            "One thing I love about you is…",
+            value=st.session_state.memory["one_thing"],
+            height=80,
+            placeholder="e.g., your kindness / your calm / your chaos (in a cute way)"
+        )
+        saved = st.form_submit_button("Save + Preview letter")
+
+    if saved:
+        st.session_state.memory["saved"] = True
+        st.success("Saved.")
+
+    if st.session_state.memory.get("saved"):
+        st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+        st.markdown("<div class='small'><b>Preview</b></div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div class='card' style='margin-top:10px;'><div class='pad' style='padding:18px;'>"
+            f"<pre style='white-space:pre-wrap; font-family: ui-sans-serif, system-ui; margin:0; color:#241a22;'>"
+            f"{build_letter()}</pre></div></div>",
+            unsafe_allow_html=True
+        )
+
+    card_close()
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button("Back"):
+            go(3)
+    with c2:
+        if st.button("Continue"):
+            go(5)
+
+# ---------- STEP 6: Final ----------
 else:
     card_open("final")
     st.markdown(f"<div class='title'>{GF_NAME}, one last screen.</div>", unsafe_allow_html=True)
@@ -406,34 +581,35 @@ position:relative;overflow:hidden;padding:14px;">
 
     if st.session_state.final_yes:
         st.balloons()
-        chosen = ", ".join(st.session_state.promise_ideas) if st.session_state.promise_ideas else "to be decided together"
-        st.markdown(textwrap.dedent(f"""
-        <div class="shell"><div class="card"><div class="pad">
-          <div class="toprow">
-            <div class="brand">
-              <div style="width:44px;height:44px;border-radius:14px;border:1px solid rgba(255,63,156,0.16);
-                          background:rgba(255,255,255,0.90);display:grid;place-items:center;">{CAT_SVG}</div>
-              <div>PookieBear</div>
-            </div>
-            <div class="pill">confirmed</div>
-          </div>
-          <div class="title" style="font-size:34px;">It’s official.</div>
-          <div class="subtitle"><b>{GF_NAME}</b> just made <b>{YOUR_NAME}</b> extremely happy.</div>
-          <div class="kpiRow">
-            <div class="kpi"><div class="k">Date</div><div class="v">Feb 14</div></div>
-            <div class="kpi"><div class="k">Plan</div><div class="v">{chosen}</div></div>
-            <div class="kpi"><div class="k">Bonus</div><div class="v">Screenshot this</div></div>
-          </div>
-        </div></div></div>
-        """), unsafe_allow_html=True)
+        letter = build_letter()
+        pdf_bytes = make_certificate_pdf(letter)
+
+        st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
+        st.markdown("<div class='small'><b>Your letter</b></div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div class='card' style='margin-top:10px;'><div class='pad' style='padding:18px;'>"
+            f"<pre style='white-space:pre-wrap; font-family: ui-sans-serif, system-ui; margin:0; color:#241a22;'>"
+            f"{letter}</pre></div></div>",
+            unsafe_allow_html=True
+        )
+
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+        st.download_button(
+            "Download Valentine Certificate (PDF)",
+            data=pdf_bytes,
+            file_name="valentine_certificate.pdf",
+            mime="application/pdf",
+            use_container_width=True,
+        )
 
         c1, c2 = st.columns(2)
         with c1:
             if st.button("Replay"):
-                for k in ["step","passport","quiz_done","quiz_score","promise_ideas","final_yes"]:
+                for k in ["step","passport","quiz_done","quiz_score","promise_ideas","memory","final_yes"]:
                     if k in st.session_state:
                         del st.session_state[k]
                 st.rerun()
         with c2:
-            if st.button("Back to start"):
-                go(0)
+            if st.button("Back to Memory Lane"):
+                st.session_state.final_yes = False
+                go(4)
