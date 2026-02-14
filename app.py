@@ -346,15 +346,25 @@ I want **more moments**.
 
 elif st.session_state.step == 4:
     hero("Buchu 💘", "Will you be my Valentine?")
-    step_card("Choose carefully 😌", "The **No** button is… emotionally unavailable.")
+    step_card(
+        "I love you.",
+        "And I’m asking properly… because you mean everything to me."
+    )
 
-    # Working HTML: uses window.parent.location (fixes the YES bug)
-    # Working NO: absolute positioning inside a bounded arena + vanish on click
+    # ✅ REAL Streamlit YES button (works 100% reliably)
+    if st.button("Yes 💖"):
+        st.session_state.accepted = True
+        st.session_state.step = 5
+        st.rerun()
+
+    st.markdown('<div class="tiny">The “No” button is… allergic to rejection 🤭</div>', unsafe_allow_html=True)
+
+    # 🏃‍♂️ Runaway NO button in HTML (for the joke)
     components.html(
         """
         <div id="arena" style="
           position: relative;
-          height: 210px;
+          height: 190px;
           border-radius: 22px;
           background: rgba(255,255,255,0.55);
           border: 1px solid rgba(255, 105, 180, 0.18);
@@ -363,26 +373,11 @@ elif st.session_state.step == 4:
           -webkit-backdrop-filter: blur(14px);
           overflow: hidden;
           padding: 16px;
+          margin-top: 12px;
         ">
-          <div style="text-align:center; font-weight:700; color: rgba(25,20,30,0.65); margin-bottom: 10px;">
-            Try clicking “No” if you dare 😭
+          <div style="text-align:center; font-weight:700; color: rgba(25,20,30,0.62); margin-bottom: 10px;">
+            Try pressing “No” 😭
           </div>
-
-          <button id="yesBtn" style="
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            bottom: 18px;
-            cursor: pointer;
-            border-radius: 18px;
-            padding: 14px 18px;
-            font-size: 16px;
-            font-weight: 900;
-            border: 1px solid rgba(255, 105, 180, 0.22);
-            background: linear-gradient(135deg, rgba(255,105,180,0.24), rgba(173,216,230,0.16), rgba(255,255,255,0.6));
-            box-shadow: 0 12px 30px rgba(255, 105, 180, 0.12);
-            min-width: 190px;
-          ">Yes 💖</button>
 
           <button id="noBtn" style="
             position: absolute;
@@ -394,29 +389,27 @@ elif st.session_state.step == 4:
             font-size: 16px;
             font-weight: 900;
             border: 1px solid rgba(25,20,30,0.12);
-            background: rgba(255,255,255,0.70);
+            background: rgba(255,255,255,0.75);
             box-shadow: 0 10px 24px rgba(25,20,30,0.07);
-            min-width: 190px;
+            min-width: 220px;
             transition: transform 0.16s ease, opacity 0.16s ease;
           ">No 🙃</button>
 
           <div id="note" style="
             position:absolute;
-            left: 0;
-            right: 0;
-            bottom: 70px;
+            left: 0; right: 0;
+            bottom: 14px;
             text-align:center;
             color: rgba(25,20,30,0.55);
             font-size: 13.5px;
           ">
-            (Not a bug. I trained it to protect my feelings.)
+            (Not a bug. It’s my self-respect.)
           </div>
         </div>
 
         <script>
           const arena = document.getElementById("arena");
           const noBtn = document.getElementById("noBtn");
-          const yesBtn = document.getElementById("yesBtn");
           const note = document.getElementById("note");
 
           function rand(min, max){ return Math.random() * (max - min) + min; }
@@ -427,10 +420,10 @@ elif st.session_state.step == 4:
 
             const padding = 10;
             const maxX = arenaRect.width - btnRect.width - padding;
-            const maxY = arenaRect.height - btnRect.height - 60; // keep above note/yes area
+            const maxY = arenaRect.height - btnRect.height - 45;
 
             const x = rand(padding, Math.max(padding, maxX));
-            const y = rand(52, Math.max(52, maxY));
+            const y = rand(55, Math.max(55, maxY));
 
             noBtn.style.left = x + "px";
             noBtn.style.top = y + "px";
@@ -440,24 +433,18 @@ elif st.session_state.step == 4:
 
           noBtn.addEventListener("mouseenter", moveNo);
           noBtn.addEventListener("mousedown", moveNo);
+
           noBtn.addEventListener("click", () => {
             noBtn.style.transform = "scale(0.2)";
             noBtn.style.opacity = "0";
             setTimeout(() => {
               noBtn.style.display = "none";
-              note.textContent = "No option has been removed for your convenience. 😌💗";
+              note.textContent = "No option has been removed. You’re welcome. 😌💗";
             }, 170);
-          });
-
-          yesBtn.addEventListener("click", () => {
-            // IMPORTANT: update the PARENT page URL (not the iframe)
-            const url = new URL(window.parent.location.href);
-            url.searchParams.set("answer", "yes");
-            window.parent.location.href = url.toString();
           });
         </script>
         """,
-        height=250,
+        height=230,
     )
 
     st.markdown('<div class="tiny">Hover the “No” button 🤭</div>', unsafe_allow_html=True)
