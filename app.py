@@ -1,30 +1,23 @@
 import random
 import time
+import textwrap
 import streamlit as st
 
-# -----------------------------
-# Customize
-# -----------------------------
 GF_NAME = "Dipika"
 YOUR_NAME = "Tanmay"
 
-# -----------------------------
-# Page config
-# -----------------------------
 st.set_page_config(page_title="PookieBear Experience", page_icon="🐾", layout="centered")
 
-# -----------------------------
-# CSS: pink/white, clean, premium
-# -----------------------------
-st.markdown("""
+# ---------- CSS (strong overrides for Streamlit widgets) ----------
+st.markdown(textwrap.dedent("""
 <style>
 #MainMenu, footer, header {visibility:hidden;}
-.block-container{max-width:820px; padding-top:26px; padding-bottom:40px;}
+.block-container{max-width:820px; padding-top:24px; padding-bottom:40px;}
 
 :root{
   --bg1:#fff7fb;
   --bg2:#ffe6f1;
-  --card: rgba(255,255,255,0.82);
+  --card: rgba(255,255,255,0.86);
   --stroke: rgba(255, 63, 156, 0.16);
   --ink: #241a22;
   --muted:#6f5f6a;
@@ -49,7 +42,7 @@ st.markdown("""
   position: fixed;
   width: 520px; height: 520px;
   border-radius: 999px;
-  filter: blur(32px);
+  filter: blur(34px);
   opacity: .55;
   z-index: 0;
   pointer-events:none;
@@ -68,27 +61,24 @@ st.markdown("""
   backdrop-filter: blur(10px);
   overflow:hidden;
 }
-.pad{padding:26px;}
-.toprow{display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:12px;}
+.pad{padding:24px;}
+.toprow{display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:10px;}
 .brand{display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:-.4px; color:var(--ink);}
 .pill{
   font-size:12px; padding:6px 10px; border-radius:999px;
   border:1px solid rgba(255,63,156,0.18);
-  background: rgba(255,255,255,0.78);
+  background: rgba(255,255,255,0.85);
   color: var(--muted);
   white-space:nowrap;
 }
 .title{font-size: 40px; line-height:1.06; letter-spacing:-1.1px; margin:8px 0 10px; color:var(--ink);}
-.subtitle{font-size:16px; line-height:1.6; margin:0 0 16px; color:var(--muted);}
+.subtitle{font-size:16px; line-height:1.6; margin:0 0 10px; color:var(--muted);}
 
-.stepper{
-  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
-  margin-top:10px;
-}
-.stepDot{
-  width:10px; height:10px; border-radius:999px;
-  background: rgba(36,26,34,0.12);
-}
+.divider{height:1px; background: rgba(255,63,156,0.12); margin:16px 0;}
+.small{font-size:13px; color: rgba(111,95,106,0.95);}
+
+.stepper{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px;}
+.stepDot{width:10px; height:10px; border-radius:999px; background: rgba(36,26,34,0.12);}
 .stepDot.on{ background: linear-gradient(135deg, var(--pink), var(--pink2)); }
 .stepLabel{font-size:12px; color:var(--muted); margin-left:8px;}
 
@@ -96,62 +86,61 @@ st.markdown("""
 .kpi{
   border-radius: 18px;
   border: 1px solid rgba(255,63,156,0.12);
-  background: rgba(255,255,255,0.78);
+  background: rgba(255,255,255,0.88);
   padding: 12px;
 }
 .kpi .k{font-size:12px; color:var(--muted);}
 .kpi .v{font-size:16px; font-weight:900; color:var(--ink); margin-top:2px;}
 
-.divider{height:1px; background: rgba(255,63,156,0.12); margin:18px 0;}
-
-.small{font-size:13px; color: rgba(111,95,106,0.95);}
-
-/* Streamlit buttons */
-div.stButton > button, button[kind="primary"]{
+/* Buttons */
+div.stButton > button{
   width:100%;
-  height:58px;
-  border-radius:18px !important;
+  height:56px;
+  border-radius:16px !important;
   font-size:18px !important;
   font-weight:900 !important;
   border: 1px solid rgba(36,26,34,0.10) !important;
-  background: rgba(255,255,255,0.92) !important;
+  background: rgba(255,255,255,0.95) !important;
   color: var(--ink) !important;
   box-shadow: 0 14px 34px rgba(255,63,156,0.10) !important;
-  transition: transform .12s ease, box-shadow .12s ease !important;
 }
 div.stButton > button:hover{
   transform: translateY(-1px);
   box-shadow: 0 18px 46px rgba(255,63,156,0.16) !important;
 }
-div.stButton > button:active{
-  transform: translateY(0px) scale(0.99);
-}
-
-/* Primary CTA wrapper */
 .primaryWrap div.stButton > button{
   border:none !important;
   color:white !important;
   background: linear-gradient(135deg, var(--pink) 0%, var(--pink2) 100%) !important;
-  height:64px !important;
+  height:62px !important;
   font-size:20px !important;
   box-shadow: 0 22px 60px rgba(255,63,156,0.28) !important;
 }
-.primaryWrap div.stButton > button:hover{
-  box-shadow: 0 26px 72px rgba(255,63,156,0.34) !important;
-}
 
-/* Inputs */
-.stTextInput input, .stSelectbox div[data-baseweb="select"] > div, .stRadio div[role="radiogroup"]{
-  border-radius:16px !important;
+/* Inputs: force light look */
+label, .stMarkdown, .stText, p, span, div { color: var(--ink); }
+.stTextInput input{
+  background: rgba(255,255,255,0.96) !important;
+  color: var(--ink) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,63,156,0.14) !important;
+}
+.stSelectbox [data-baseweb="select"] > div{
+  background: rgba(255,255,255,0.96) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,63,156,0.14) !important;
+}
+.stRadio div[role="radiogroup"]{
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(255,63,156,0.12);
+  padding: 12px 12px 2px 12px;
+  border-radius: 16px;
 }
 </style>
 
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
-""", unsafe_allow_html=True)
+"""), unsafe_allow_html=True)
 
-# -----------------------------
-# SVG cat icon (clean, not emoji)
-# -----------------------------
 CAT_SVG = """
 <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
   <path d="M6.3 10.2 4.4 6.6c-.2-.4.2-.9.7-.8l3.4.8M17.7 10.2l1.9-3.6c.2-.4-.2-.9-.7-.8l-3.4.8"
@@ -162,100 +151,72 @@ CAT_SVG = """
   <circle cx="14" cy="13" r="1" fill="#241a22"/>
   <path d="M12 14.4c.7 0 1.2.5 1.2 1.2S12.7 16.8 12 16.8 10.8 16.3 10.8 15.6 11.3 14.4 12 14.4Z"
         fill="#ff3f9c" opacity=".55"/>
-  <path d="M8.2 15.5H6.3M8.3 16.7H6.5M15.8 15.5h1.9M15.7 16.7h1.8"
-        stroke="#241a22" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
 </svg>
 """
 
-# -----------------------------
-# Stable state machine
-# -----------------------------
 STEPS = ["Boot", "Pookie Passport", "Compatibility", "Pinky Promise", "Final Question"]
 
 def init_state():
     st.session_state.setdefault("step", 0)
-    st.session_state.setdefault("passport", {"nickname": "", "fav_snack": "", "fav_color": "", "vibe": ""})
-    st.session_state.setdefault("quiz", {"score": 0, "done": False})
-    st.session_state.setdefault("promise", {"ideas": []})
+    st.session_state.setdefault("passport", {"nickname":"", "fav_snack":"", "fav_color":"", "vibe":""})
+    st.session_state.setdefault("quiz_done", False)
+    st.session_state.setdefault("quiz_score", 0)
+    st.session_state.setdefault("promise_ideas", [])
     st.session_state.setdefault("final_yes", False)
-    st.session_state.setdefault("seed", random.randint(1, 999999))
 
-def go(step_idx: int):
-    st.session_state.step = max(0, min(step_idx, len(STEPS) - 1))
+def go(i):
+    st.session_state.step = max(0, min(i, len(STEPS)-1))
     st.rerun()
 
 def stepper():
     dots = []
     for i in range(len(STEPS)):
-        cls = "stepDot on" if i <= st.session_state.step else "stepDot"
-        dots.append(f"<span class='{cls}'></span>")
+        dots.append(f"<span class='stepDot {'on' if i<=st.session_state.step else ''}'></span>")
     st.markdown(
-        f"<div class='stepper'>{''.join(dots)}"
-        f"<span class='stepLabel'>{STEPS[st.session_state.step]} ({st.session_state.step+1}/{len(STEPS)})</span></div>",
+        f"<div class='stepper'>{''.join(dots)}<span class='stepLabel'>{STEPS[st.session_state.step]} ({st.session_state.step+1}/{len(STEPS)})</span></div>",
         unsafe_allow_html=True
     )
-    st.progress((st.session_state.step + 1) / len(STEPS))
+    st.progress((st.session_state.step+1)/len(STEPS))
 
-def header(title: str, subtitle: str, pill: str):
-    st.markdown(f"""
-<div class="shell">
-  <div class="card">
-    <div class="pad">
+def card_open(pill):
+    st.markdown(textwrap.dedent(f"""
+    <div class="shell"><div class="card"><div class="pad">
       <div class="toprow">
         <div class="brand">
           <div style="width:44px;height:44px;border-radius:14px;border:1px solid rgba(255,63,156,0.16);
-                      background:rgba(255,255,255,0.82);display:grid;place-items:center;">{CAT_SVG}</div>
+                      background:rgba(255,255,255,0.90);display:grid;place-items:center;">{CAT_SVG}</div>
           <div>PookieBear</div>
         </div>
         <div class="pill">{pill}</div>
       </div>
+    """), unsafe_allow_html=True)
 
-      <div class="title">{title}</div>
-      <div class="subtitle">{subtitle}</div>
-      {"<div class='divider'></div>" if st.session_state.step > 0 else ""}
-""", unsafe_allow_html=True)
-    stepper()
-
-def footer_nav(show_back=True, show_next=True, next_label="Next"):
-    c1, c2 = st.columns(2, gap="large")
-    with c1:
-        if show_back:
-            if st.button("Back"):
-                go(st.session_state.step - 1)
-    with c2:
-        if show_next:
-            if st.button(next_label):
-                go(st.session_state.step + 1)
-
-def close_card():
+def card_close():
     st.markdown("</div></div></div>", unsafe_allow_html=True)
 
-# -----------------------------
-# Screens
-# -----------------------------
 init_state()
 
-# STEP 1: Boot
+# ---------- STEP 1 ----------
 if st.session_state.step == 0:
-    header(
-        title="A small experience, for one person.",
-        subtitle=f"This is a private little app designed for <b>{GF_NAME}</b>. "
-                 f"It takes ~60 seconds and ends with one question.",
-        pill="pink • clean • safe"
-    )
-    close_card()
+    card_open("pink • clean • safe")
+    st.markdown(f"<div class='title'>A small experience, for one person.</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='subtitle'>This is a private little app designed for <b>{GF_NAME}</b>. It ends with one question.</div>", unsafe_allow_html=True)
+    stepper()
+    card_close()
 
     st.markdown("<div class='small'>Loading modules…</div>", unsafe_allow_html=True)
     p = st.progress(0)
     for i in range(100):
-        time.sleep(0.008)
-        p.progress(i + 1)
+        time.sleep(0.006)
+        p.progress(i+1)
 
-    st.markdown("<div class='kpiRow'>"
-                "<div class='kpi'><div class='k'>Vibe</div><div class='v'>Soft</div></div>"
-                "<div class='kpi'><div class='k'>Theme</div><div class='v'>Pink / White</div></div>"
-                "<div class='kpi'><div class='k'>Outcome</div><div class='v'>Happiness</div></div>"
-                "</div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div class='kpiRow'>
+      <div class='kpi'><div class='k'>Vibe</div><div class='v'>Soft</div></div>
+      <div class='kpi'><div class='k'>Theme</div><div class='v'>Pink / White</div></div>
+      <div class='kpi'><div class='k'>Outcome</div><div class='v'>Happiness</div></div>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
     st.markdown('<div class="primaryWrap">', unsafe_allow_html=True)
@@ -263,135 +224,125 @@ if st.session_state.step == 0:
         go(1)
     st.markdown("</div>", unsafe_allow_html=True)
 
-# STEP 2: Passport
+# ---------- STEP 2 ----------
 elif st.session_state.step == 1:
-    header(
-        title="Pookie Passport",
-        subtitle="Tiny details, but they make it feel personal. Fill these quickly (or skip with anything).",
-        pill="step 2"
-    )
+    card_open("step 2")
+    st.markdown("<div class='title'>Pookie Passport</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Quick, cute, personal. (You can type anything.)</div>", unsafe_allow_html=True)
+    stepper()
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 
-    with st.form("passport_form", clear_on_submit=False):
-        nickname = st.text_input("What do I call you?", value=st.session_state.passport["nickname"], placeholder="e.g., pookie / baby / Dipika")
-        snack = st.text_input("Your comfort snack", value=st.session_state.passport["fav_snack"], placeholder="e.g., chocolate / chips / ice cream")
-        color = st.selectbox("Your favorite color", ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Green", "Other"],
-                             index=0 if st.session_state.passport["fav_color"] == "" else
-                             ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Green", "Other"].index(st.session_state.passport["fav_color"]))
-        vibe = st.selectbox("Today’s vibe", ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"],
-                            index=0 if st.session_state.passport["vibe"] == "" else
-                            ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"].index(st.session_state.passport["vibe"]))
-        submitted = st.form_submit_button("Save passport")
+    with st.form("passport"):
+        st.session_state.passport["nickname"] = st.text_input("What do I call you?", value=st.session_state.passport["nickname"])
+        st.session_state.passport["fav_snack"] = st.text_input("Your comfort snack", value=st.session_state.passport["fav_snack"])
+        st.session_state.passport["fav_color"] = st.selectbox("Favorite color", ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"],
+                                                             index=max(0, ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"].index(st.session_state.passport["fav_color"]) if st.session_state.passport["fav_color"] in ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Other"] else 0))
+        st.session_state.passport["vibe"] = st.selectbox("Today’s vibe", ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"],
+                                                        index=max(0, ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"].index(st.session_state.passport["vibe"]) if st.session_state.passport["vibe"] in ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"] else 0))
+        saved = st.form_submit_button("Save passport")
 
-    if submitted:
-        st.session_state.passport = {"nickname": nickname.strip(), "fav_snack": snack.strip(), "fav_color": color, "vibe": vibe}
+    if saved:
         st.success("Saved.")
 
-    close_card()
+    card_close()
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button("Back"):
+            go(0)
+    with c2:
+        if st.button("Continue"):
+            go(2)
 
-    footer_nav(show_back=True, show_next=True, next_label="Continue")
-
-# STEP 3: Compatibility quiz (longer, polished)
+# ---------- STEP 3 ----------
 elif st.session_state.step == 2:
-    header(
-        title="Compatibility Check",
-        subtitle="This is not science. This is pookie logic. Answer 4 quick questions.",
-        pill="step 3"
-    )
+    card_open("step 3")
+    st.markdown("<div class='title'>Compatibility Check</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Not science. Just pookie logic. Four quick picks.</div>", unsafe_allow_html=True)
+    stepper()
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 
-    if not st.session_state.quiz["done"]:
-        with st.form("quiz_form"):
-            q1 = st.radio("Pick a date style", ["Cozy café", "Movie night", "Walk + photos", "Fancy dinner"], index=0)
-            q2 = st.radio("Pick a gift vibe", ["Handwritten note", "Chocolate", "Flowers", "A surprise plan"], index=0)
-            q3 = st.radio("Pick a music mood", ["Soft + calm", "Pop", "Bollywood", "Anything if it's together"], index=0)
-            q4 = st.radio("Pick a pet energy", ["Cat energy", "Golden retriever energy", "Both", "Sleepy panda"], index=0)
-            done = st.form_submit_button("Calculate score")
+    if not st.session_state.quiz_done:
+        with st.form("quiz"):
+            q1 = st.radio("Date style", ["Cozy café", "Movie night", "Walk + photos", "Fancy dinner"], index=0)
+            q2 = st.radio("Gift vibe", ["Handwritten note", "Chocolate", "Flowers", "A surprise plan"], index=0)
+            q3 = st.radio("Music mood", ["Soft + calm", "Pop", "Bollywood", "Anything if it's together"], index=0)
+            q4 = st.radio("Pet energy", ["Cat energy", "Golden retriever energy", "Both", "Sleepy panda"], index=0)
+            ok = st.form_submit_button("Calculate score")
 
-        if done:
-            # simple deterministic scoring (bug-safe, no random surprises)
+        if ok:
             score = 70
-            if q1 in ["Cozy café", "Movie night"]:
-                score += 10
-            if q2 in ["Handwritten note", "A surprise plan"]:
-                score += 10
-            if q3 == "Anything if it's together":
-                score += 10
-            if q4 == "Cat energy":
-                score += 10
-            score = min(score, 100)
-
-            st.session_state.quiz = {"score": score, "done": True}
+            if q1 in ["Cozy café", "Movie night"]: score += 10
+            if q2 in ["Handwritten note", "A surprise plan"]: score += 10
+            if q3 == "Anything if it's together": score += 10
+            if q4 == "Cat energy": score += 10
+            st.session_state.quiz_score = min(score, 100)
+            st.session_state.quiz_done = True
             st.rerun()
-
     else:
-        score = st.session_state.quiz["score"]
-        st.markdown(f"<div class='kpiRow'>"
-                    f"<div class='kpi'><div class='k'>Compatibility</div><div class='v'>{score}%</div></div>"
-                    f"<div class='kpi'><div class='k'>Risk</div><div class='v'>Falling harder</div></div>"
-                    f"<div class='kpi'><div class='k'>Verdict</div><div class='v'>Approved</div></div>"
-                    f"</div>", unsafe_allow_html=True)
-        st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-
-        nick = st.session_state.passport.get("nickname") or GF_NAME
-        snack = st.session_state.passport.get("fav_snack") or "something sweet"
-        st.info(f"Result: {nick} + {YOUR_NAME} = dangerous levels of cute. Reward: {snack}.")
-
-        if st.button("Recalculate (just for fun)"):
-            st.session_state.quiz = {"score": 0, "done": False}
+        st.markdown(f"""
+        <div class='kpiRow'>
+          <div class='kpi'><div class='k'>Compatibility</div><div class='v'>{st.session_state.quiz_score}%</div></div>
+          <div class='kpi'><div class='k'>Risk</div><div class='v'>Falling harder</div></div>
+          <div class='kpi'><div class='k'>Verdict</div><div class='v'>Approved</div></div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Recalculate"):
+            st.session_state.quiz_done = False
+            st.session_state.quiz_score = 0
             st.rerun()
 
-    close_card()
-    footer_nav(show_back=True, show_next=True, next_label="Continue")
+    card_close()
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button("Back"):
+            go(1)
+    with c2:
+        if st.button("Continue"):
+            go(3)
 
-# STEP 4: Pinky Promise (longer)
+# ---------- STEP 4 ----------
 elif st.session_state.step == 3:
-    header(
-        title="Pinky Promise",
-        subtitle="Pick what you want on Valentine’s. I’ll treat it like a contract.",
-        pill="step 4"
-    )
+    card_open("step 4")
+    st.markdown("<div class='title'>Pinky Promise</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Pick what you want on Valentine’s. I’m taking notes.</div>", unsafe_allow_html=True)
+    stepper()
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
 
-    ideas = st.multiselect(
+    st.session_state.promise_ideas = st.multiselect(
         "Choose your perfect plan",
-        ["Café + dessert", "Flowers", "Movie night", "Walk + photos", "A surprise itinerary", "Stay in + cozy night", "Fancy dinner"],
-        default=st.session_state.promise["ideas"],
+        ["Café + dessert", "Flowers", "Movie night", "Walk + photos", "Surprise itinerary", "Stay in + cozy night", "Fancy dinner"],
+        default=st.session_state.promise_ideas,
     )
-    st.session_state.promise["ideas"] = ideas
 
-    nick = st.session_state.passport.get("nickname") or GF_NAME
-    vibe = st.session_state.passport.get("vibe") or "Soft"
-    color = st.session_state.passport.get("fav_color") or "Pink"
+    nick = st.session_state.passport["nickname"] or GF_NAME
+    vibe = st.session_state.passport["vibe"] or "Soft"
+    chosen = ", ".join(st.session_state.promise_ideas) if st.session_state.promise_ideas else "to be decided together"
 
     st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
-    st.markdown(
-        f"<div class='small'><b>Pookie Contract</b><br>"
-        f"I, <b>{YOUR_NAME}</b>, agree to deliver a <b>{vibe}</b> day for <b>{nick}</b>.<br>"
-        f"Theme: <b>{color}</b>. Chosen plan: <b>{', '.join(ideas) if ideas else 'to be decided together'}</b>.</div>",
-        unsafe_allow_html=True
-    )
+    st.markdown(f"<div class='small'><b>Pookie Contract</b><br>I, {YOUR_NAME}, agree to deliver a <b>{vibe}</b> day for <b>{nick}</b>.<br>Chosen plan: <b>{chosen}</b>.</div>", unsafe_allow_html=True)
 
-    close_card()
-    footer_nav(show_back=True, show_next=True, next_label="Continue")
+    card_close()
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button("Back"):
+            go(2)
+    with c2:
+        if st.button("Continue"):
+            go(4)
 
-# STEP 5: Final Question (best part)
+# ---------- STEP 5 ----------
 else:
-    nick = st.session_state.passport.get("nickname") or GF_NAME
-
-    header(
-        title=f"{nick}, one last screen.",
-        subtitle="This is the actual question. The rest was just to make you smile.",
-        pill="final"
-    )
-
+    card_open("final")
+    st.markdown(f"<div class='title'>{GF_NAME}, one last screen.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>This is the actual question. The rest was just to make you smile.</div>", unsafe_allow_html=True)
+    stepper()
     st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+    card_close()
 
-    st.markdown(
-        f"<div class='title' style='font-size:34px;margin-top:0'>Will you be my Valentine?</div>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<h1 style='margin-top:10px;'>Will you be my Valentine?</h1>", unsafe_allow_html=True)
     st.markdown("<div class='small'>The “no” button has… opinions.</div>", unsafe_allow_html=True)
-    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
-    left, right = st.columns([1.25, 0.75], gap="large")
+    left, right = st.columns([1.2, 0.8], gap="large")
     with left:
         st.markdown('<div class="primaryWrap">', unsafe_allow_html=True)
         if st.button("Yes, I will"):
@@ -399,146 +350,90 @@ else:
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("<div class='small'>Clicking yes triggers the official confirmation card.</div>", unsafe_allow_html=True)
-
     with right:
-        # Escaping NO button (JS). This is stable and self-contained.
-        st.components.v1.html(
-            """
-<div style="
-  height: 120px;
-  border-radius: 18px;
-  border: 1px solid rgba(36,26,34,0.10);
-  background: rgba(255,255,255,0.92);
-  box-shadow: 0 14px 34px rgba(255,63,156,0.10);
-  position: relative;
-  overflow:hidden;
-  padding: 14px;
-">
-  <div style="font-weight:900; color: rgba(36,26,34,0.86); margin-bottom:10px;">No (if you can)</div>
-  <button id="noBtn" style="
-    position:absolute; left: 18%; top: 56px;
-    height: 44px; padding: 0 14px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,63,156,0.22);
-    background: rgba(255,63,156,0.08);
-    font-weight: 900; font-size: 14px;
-    color: rgba(36,26,34,0.92);
-    cursor: pointer;
-    transition: transform .12s ease, opacity .18s ease, filter .18s ease;
-    will-change: left, transform, opacity;
-  ">No</button>
-
-  <div id="msg" style="
-    position:absolute; left:14px; bottom:10px;
-    font-size:12px; color: rgba(111,95,106,0.95);
-  ">Hover near it.</div>
+        st.components.v1.html("""
+<div style="height:120px;border-radius:18px;border:1px solid rgba(36,26,34,0.10);
+background:rgba(255,255,255,0.92);box-shadow:0 14px 34px rgba(255,63,156,0.10);
+position:relative;overflow:hidden;padding:14px;">
+  <div style="font-weight:900;color:rgba(36,26,34,0.86);margin-bottom:10px;">No (if you can)</div>
+  <button id="noBtn" style="position:absolute;left:18%;top:56px;height:44px;padding:0 14px;border-radius:14px;
+    border:1px solid rgba(255,63,156,0.22);background:rgba(255,63,156,0.08);font-weight:900;font-size:14px;
+    color:rgba(36,26,34,0.92);cursor:pointer;transition:transform .12s ease, opacity .18s ease, filter .18s ease;">
+    No
+  </button>
+  <div id="msg" style="position:absolute;left:14px;bottom:10px;font-size:12px;color:rgba(111,95,106,0.95);">
+    Hover near it.
+  </div>
 </div>
-
 <script>
 (function(){
   const btn = document.getElementById("noBtn");
   const msg = document.getElementById("msg");
-  let t = 0;
-
-  function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
-  function rand(min,max){ return Math.random()*(max-min)+min; }
-
-  function move(){
-    const x = rand(8, 70);
-    btn.style.left = x + "%";
-  }
+  let t=0;
+  function clamp(n,a,b){return Math.max(a, Math.min(b,n));}
+  function rand(min,max){return Math.random()*(max-min)+min;}
+  function move(){ btn.style.left = rand(6,72) + "%"; }
   function setMsg(){
-    const lines = [
-      "No is under maintenance.",
-      "Nice try.",
-      "It’s shy.",
-      "Please press yes.",
-      "Option removed."
-    ];
+    const lines=["No is under maintenance.","Nice try.","It’s shy.","Please press yes.","Option removed."];
     msg.textContent = lines[Math.min(t, lines.length-1)];
   }
   function escalate(){
-    if(t===1){ btn.textContent="Nope"; btn.style.transform="scale(0.92)"; }
-    else if(t===2){ btn.textContent="…"; btn.style.transform="scale(0.84) rotate(-2deg)"; }
-    else if(t===3){ btn.style.filter="blur(1.2px)"; btn.style.transform="scale(0.76) rotate(2deg)"; }
-    else if(t===4){ btn.style.opacity="0.45"; btn.style.transform="scale(0.68)"; btn.textContent=""; }
-    else if(t>=5){ btn.style.opacity="0"; btn.style.pointerEvents="none"; msg.textContent="No option has left."; }
+    if(t===1){btn.textContent="Nope"; btn.style.transform="scale(0.92)";}
+    else if(t===2){btn.textContent="…"; btn.style.transform="scale(0.84) rotate(-2deg)";}
+    else if(t===3){btn.style.filter="blur(1.2px)"; btn.style.transform="scale(0.76) rotate(2deg)";}
+    else if(t===4){btn.style.opacity="0.45"; btn.style.transform="scale(0.68)"; btn.textContent="";}
+    else if(t>=5){btn.style.opacity="0"; btn.style.pointerEvents="none"; msg.textContent="No option has left.";}
   }
-
-  // run away when mouse gets close
   const box = btn.parentElement;
-  box.addEventListener("mousemove", (e)=>{
+  box.addEventListener("mousemove",(e)=>{
     if(btn.style.pointerEvents==="none") return;
-    const r = btn.getBoundingClientRect();
-    const dx = e.clientX - (r.left + r.width/2);
-    const dy = e.clientY - (r.top + r.height/2);
-    const d = Math.sqrt(dx*dx + dy*dy);
-    if(d < 70){
-      t = clamp(t+1, 0, 99);
+    const r=btn.getBoundingClientRect();
+    const dx=e.clientX-(r.left+r.width/2);
+    const dy=e.clientY-(r.top+r.height/2);
+    if(Math.sqrt(dx*dx+dy*dy)<70){
+      t=clamp(t+1,0,99);
       move(); setMsg(); escalate();
     }
   });
-
-  btn.addEventListener("click", ()=>{
-    t = clamp(t+2, 0, 99);
+  btn.addEventListener("click",()=>{
+    t=clamp(t+2,0,99);
     move(); setMsg(); escalate();
   });
-
-  setTimeout(move, 200);
+  setTimeout(move,200);
 })();
 </script>
-""",
-            height=140,
-        )
+""", height=140)
 
-    close_card()
-
-    # YES result card (Streamlit-only, stable)
     if st.session_state.final_yes:
         st.balloons()
-        ideas = st.session_state.promise.get("ideas") or []
-        plan = ", ".join(ideas) if ideas else "to be decided together"
-        snack = st.session_state.passport.get("fav_snack") or "something sweet"
+        chosen = ", ".join(st.session_state.promise_ideas) if st.session_state.promise_ideas else "to be decided together"
+        st.markdown(textwrap.dedent(f"""
+        <div class="shell"><div class="card"><div class="pad">
+          <div class="toprow">
+            <div class="brand">
+              <div style="width:44px;height:44px;border-radius:14px;border:1px solid rgba(255,63,156,0.16);
+                          background:rgba(255,255,255,0.90);display:grid;place-items:center;">{CAT_SVG}</div>
+              <div>PookieBear</div>
+            </div>
+            <div class="pill">confirmed</div>
+          </div>
+          <div class="title" style="font-size:34px;">It’s official.</div>
+          <div class="subtitle"><b>{GF_NAME}</b> just made <b>{YOUR_NAME}</b> extremely happy.</div>
+          <div class="kpiRow">
+            <div class="kpi"><div class="k">Date</div><div class="v">Feb 14</div></div>
+            <div class="kpi"><div class="k">Plan</div><div class="v">{chosen}</div></div>
+            <div class="kpi"><div class="k">Bonus</div><div class="v">Screenshot this</div></div>
+          </div>
+        </div></div></div>
+        """), unsafe_allow_html=True)
 
-        st.markdown(f"""
-<div class="shell">
-  <div class="card">
-    <div class="pad">
-      <div class="toprow">
-        <div class="brand">
-          <div style="width:44px;height:44px;border-radius:14px;border:1px solid rgba(255,63,156,0.16);
-                      background:rgba(255,255,255,0.82);display:grid;place-items:center;">{CAT_SVG}</div>
-          <div>PookieBear</div>
-        </div>
-        <div class="pill">confirmed</div>
-      </div>
-
-      <div class="title" style="font-size:36px">It’s official.</div>
-      <div class="subtitle"><b>{GF_NAME}</b> just made <b>{YOUR_NAME}</b> extremely happy.</div>
-
-      <div class="kpiRow">
-        <div class="kpi"><div class="k">Date</div><div class="v">Feb 14</div></div>
-        <div class="kpi"><div class="k">Plan</div><div class="v">{plan}</div></div>
-        <div class="kpi"><div class="k">Bonus</div><div class="v">{snack}</div></div>
-      </div>
-
-      <div class="divider"></div>
-      <div class="small">Send me a screenshot of this screen.</div>
-    </div>
-  </div>
-</div>
-""", unsafe_allow_html=True)
-
-        c1, c2 = st.columns(2, gap="large")
+        c1, c2 = st.columns(2)
         with c1:
-            if st.button("Replay the whole experience"):
-                # reset cleanly (bug-free)
-                for k in ["step", "passport", "quiz", "promise", "final_yes", "seed"]:
+            if st.button("Replay"):
+                for k in ["step","passport","quiz_done","quiz_score","promise_ideas","final_yes"]:
                     if k in st.session_state:
                         del st.session_state[k]
                 st.rerun()
         with c2:
-            if st.button("Just go back"):
-                st.session_state.final_yes = False
-                go(4)
+            if st.button("Back to start"):
+                go(0)
