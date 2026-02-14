@@ -336,7 +336,7 @@ elif st.session_state.step == 3:
         """
 Buchu… I like you in a way that feels steady.
 
-Like I don’t just want a moment —
+Like I don’t just want a moment 
 I want **more moments**.
 """,
     )
