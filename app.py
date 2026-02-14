@@ -477,13 +477,13 @@ else:
 
 <p>
 I don’t know exactly when it started, but somewhere along the way you became my favorite part of the day.
-It’s not even always the big moments — it’s the small ones.
+It’s not even always the big moments  it’s the small ones.
 The way you exist in my world makes it softer.
 </p>
 
 <p>
 I love you.
-Not in a dramatic, perfect-story kind of way —
+Not in a dramatic, perfect-story kind of way 
 in the real way.
 The way I want to tell you everything.
 The way I care about how you’re feeling.
@@ -494,7 +494,7 @@ The way I catch myself smiling because I remembered something you said.
 If you’ll be my Valentine, I want it to feel like us:
 cute, cozy, and full of those little quiet moments that mean more than they should.
 I’ll hold your hand, protect your heart, hype you up,
-and keep choosing you — not just on Valentine’s Day,
+and keep choosing you  not just on Valentine’s Day,
 but on all the random days too.
 </p>
 
