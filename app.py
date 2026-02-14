@@ -1,183 +1,157 @@
+import random
 import time
 import streamlit as st
 
+# -----------------------------
+# Customize
+# -----------------------------
 GF_NAME = "Dipika"
 YOUR_NAME = "Tanmay"
 
-st.set_page_config(page_title="PookieBear", page_icon="💗", layout="centered")
+# -----------------------------
+# Page config
+# -----------------------------
+st.set_page_config(page_title="PookieBear Experience", page_icon="🐾", layout="centered")
 
 # -----------------------------
-# CSS: clean, pink/white, real animations, real SVG cats
+# CSS: pink/white, clean, premium
 # -----------------------------
-st.markdown(
-    """
+st.markdown("""
 <style>
-/* --- Reset Streamlit spacing --- */
-.block-container { max-width: 760px; padding-top: 34px; }
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer, header {visibility:hidden;}
+.block-container{max-width:820px; padding-top:26px; padding-bottom:40px;}
 
-/* --- Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap');
-html, body, [class*="css"]  { font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-
-/* --- Theme vars --- */
 :root{
   --bg1:#fff7fb;
-  --bg2:#ffeaf3;
+  --bg2:#ffe6f1;
+  --card: rgba(255,255,255,0.82);
+  --stroke: rgba(255, 63, 156, 0.16);
+  --ink: #241a22;
+  --muted:#6f5f6a;
   --pink:#ff3f9c;
   --pink2:#ff78bd;
-  --ink:#241a22;
-  --muted:#6f5f6a;
-  --card:#ffffffcc;
-  --border: rgba(255, 63, 156, 0.14);
   --shadow: 0 26px 70px rgba(255, 63, 156, 0.14);
 }
 
-/* --- Background --- */
 .stApp{
-  background: radial-gradient(1200px 700px at 15% 10%, #ffe1ef 0%, transparent 60%),
-              radial-gradient(900px 650px at 90% 25%, #ffeef6 0%, transparent 62%),
-              linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 60%, #ffffff 100%);
+  background:
+    radial-gradient(1200px 700px at 12% 8%, #ffe1ef 0%, transparent 60%),
+    radial-gradient(900px 650px at 92% 22%, #ffeef6 0%, transparent 62%),
+    linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 60%, #ffffff 100%);
 }
 
-/* --- Animated blobs --- */
-@keyframes drift {
-  0%   { transform: translate3d(0,0,0) scale(1); }
-  50%  { transform: translate3d(22px,-18px,0) scale(1.06); }
-  100% { transform: translate3d(0,0,0) scale(1); }
+@keyframes drift{
+  0%{ transform: translate3d(0,0,0) scale(1); }
+  50%{ transform: translate3d(18px,-14px,0) scale(1.05); }
+  100%{ transform: translate3d(0,0,0) scale(1); }
 }
-.blob {
+.blob{
   position: fixed;
-  width: 520px;
-  height: 520px;
+  width: 520px; height: 520px;
   border-radius: 999px;
   filter: blur(32px);
-  opacity: 0.55;
+  opacity: .55;
   z-index: 0;
-  animation: drift 10s ease-in-out infinite;
-}
-.blob.one { left: -220px; top: -200px; background: radial-gradient(circle, #ffb6d7 0%, transparent 62%); }
-.blob.two { right: -260px; top: 40px; background: radial-gradient(circle, #ffd2e7 0%, transparent 62%); animation-duration: 12s; }
-.blob.three{ left: 30%; bottom: -320px; background: radial-gradient(circle, #ffc0dd 0%, transparent 62%); animation-duration: 14s; }
-
-/* --- Card layout --- */
-.shell { position: relative; z-index: 2; }
-.card{
-  position: relative;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 26px;
-  padding: 28px;
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-}
-.card::before{
-  content:"";
-  position:absolute; inset:-2px;
-  background: radial-gradient(520px 180px at 15% 0%, rgba(255, 63, 156, 0.16), transparent 60%),
-              radial-gradient(420px 160px at 92% 20%, rgba(255, 120, 189, 0.12), transparent 60%);
   pointer-events:none;
+  animation: drift 11s ease-in-out infinite;
 }
+.b1{ left:-240px; top:-260px; background: radial-gradient(circle, #ffb6d7 0%, transparent 62%); }
+.b2{ right:-280px; top:10px; background: radial-gradient(circle, #ffd2e7 0%, transparent 62%); animation-duration: 13s; }
+.b3{ left:28%; bottom:-340px; background: radial-gradient(circle, #ffc0dd 0%, transparent 62%); animation-duration: 15s; }
 
-/* --- Header --- */
-.toprow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 14px;
-  margin-bottom: 14px;
+.shell{position:relative; z-index:2;}
+.card{
+  border-radius: 26px;
+  border: 1px solid var(--stroke);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  overflow:hidden;
 }
-.brand{
-  display:flex; align-items:center; gap:10px;
-  font-weight: 800;
-  color: var(--ink);
-  letter-spacing: -0.4px;
-}
+.pad{padding:26px;}
+.toprow{display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:12px;}
+.brand{display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:-.4px; color:var(--ink);}
 .pill{
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 63, 156, 0.18);
-  background: rgba(255,255,255,0.75);
+  font-size:12px; padding:6px 10px; border-radius:999px;
+  border:1px solid rgba(255,63,156,0.18);
+  background: rgba(255,255,255,0.78);
   color: var(--muted);
+  white-space:nowrap;
 }
-.title{
-  font-size: 40px;
-  line-height: 1.06;
-  letter-spacing: -1.1px;
-  color: var(--ink);
-  margin: 6px 0 10px 0;
-}
-.subtitle{
-  font-size: 16px;
-  line-height: 1.55;
-  color: var(--muted);
-  margin: 0 0 18px 0;
-}
+.title{font-size: 40px; line-height:1.06; letter-spacing:-1.1px; margin:8px 0 10px; color:var(--ink);}
+.subtitle{font-size:16px; line-height:1.6; margin:0 0 16px; color:var(--muted);}
 
-/* --- Buttons (Streamlit) --- */
-div.stButton > button{
-  width: 100%;
-  height: 60px;
+.stepper{
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  margin-top:10px;
+}
+.stepDot{
+  width:10px; height:10px; border-radius:999px;
+  background: rgba(36,26,34,0.12);
+}
+.stepDot.on{ background: linear-gradient(135deg, var(--pink), var(--pink2)); }
+.stepLabel{font-size:12px; color:var(--muted); margin-left:8px;}
+
+.kpiRow{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:14px;}
+.kpi{
   border-radius: 18px;
-  font-size: 18px;
-  font-weight: 800;
-  border: 1px solid rgba(36,26,34,0.10);
-  background: rgba(255,255,255,0.9);
-  color: var(--ink);
-  transition: transform .12s ease, box-shadow .12s ease;
-  box-shadow: 0 14px 34px rgba(255, 63, 156, 0.10);
+  border: 1px solid rgba(255,63,156,0.12);
+  background: rgba(255,255,255,0.78);
+  padding: 12px;
+}
+.kpi .k{font-size:12px; color:var(--muted);}
+.kpi .v{font-size:16px; font-weight:900; color:var(--ink); margin-top:2px;}
+
+.divider{height:1px; background: rgba(255,63,156,0.12); margin:18px 0;}
+
+.small{font-size:13px; color: rgba(111,95,106,0.95);}
+
+/* Streamlit buttons */
+div.stButton > button, button[kind="primary"]{
+  width:100%;
+  height:58px;
+  border-radius:18px !important;
+  font-size:18px !important;
+  font-weight:900 !important;
+  border: 1px solid rgba(36,26,34,0.10) !important;
+  background: rgba(255,255,255,0.92) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 14px 34px rgba(255,63,156,0.10) !important;
+  transition: transform .12s ease, box-shadow .12s ease !important;
 }
 div.stButton > button:hover{
   transform: translateY(-1px);
-  box-shadow: 0 18px 46px rgba(255, 63, 156, 0.16);
+  box-shadow: 0 18px 46px rgba(255,63,156,0.16) !important;
 }
-div.stButton > button:active{ transform: translateY(0px) scale(0.99); }
+div.stButton > button:active{
+  transform: translateY(0px) scale(0.99);
+}
 
-/* Primary YES */
-.primary div.stButton > button{
+/* Primary CTA wrapper */
+.primaryWrap div.stButton > button{
+  border:none !important;
+  color:white !important;
   background: linear-gradient(135deg, var(--pink) 0%, var(--pink2) 100%) !important;
-  color: white !important;
-  border: none !important;
-  height: 66px !important;
-  font-size: 20px !important;
-  box-shadow: 0 22px 60px rgba(255, 63, 156, 0.28) !important;
+  height:64px !important;
+  font-size:20px !important;
+  box-shadow: 0 22px 60px rgba(255,63,156,0.28) !important;
 }
-.primary div.stButton > button:hover{
-  box-shadow: 0 26px 70px rgba(255, 63, 156, 0.34) !important;
+.primaryWrap div.stButton > button:hover{
+  box-shadow: 0 26px 72px rgba(255,63,156,0.34) !important;
 }
 
-/* Grid row */
-.grid{
-  display:grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 16px;
-  margin-top: 6px;
-}
-.note{
-  font-size: 13px;
-  color: rgba(111,95,106,0.95);
-  margin-top: 8px;
-}
-
-/* Cute cat SVG holder */
-.catbadge{
-  width:44px; height:44px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 63, 156, 0.16);
-  background: rgba(255,255,255,0.8);
-  display:flex; align-items:center; justify-content:center;
+/* Inputs */
+.stTextInput input, .stSelectbox div[data-baseweb="select"] > div, .stRadio div[role="radiogroup"]{
+  border-radius:16px !important;
 }
 </style>
 
-<div class="blob one"></div>
-<div class="blob two"></div>
-<div class="blob three"></div>
-""",
-    unsafe_allow_html=True,
-)
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+""", unsafe_allow_html=True)
 
+# -----------------------------
+# SVG cat icon (clean, not emoji)
+# -----------------------------
 CAT_SVG = """
 <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
   <path d="M6.3 10.2 4.4 6.6c-.2-.4.2-.9.7-.8l3.4.8M17.7 10.2l1.9-3.6c.2-.4-.2-.9-.7-.8l-3.4.8"
@@ -194,226 +168,377 @@ CAT_SVG = """
 """
 
 # -----------------------------
-# State
+# Stable state machine
 # -----------------------------
-if "stage" not in st.session_state:
-    st.session_state.stage = "boot"
+STEPS = ["Boot", "Pookie Passport", "Compatibility", "Pinky Promise", "Final Question"]
 
-def boot_screen():
+def init_state():
+    st.session_state.setdefault("step", 0)
+    st.session_state.setdefault("passport", {"nickname": "", "fav_snack": "", "fav_color": "", "vibe": ""})
+    st.session_state.setdefault("quiz", {"score": 0, "done": False})
+    st.session_state.setdefault("promise", {"ideas": []})
+    st.session_state.setdefault("final_yes", False)
+    st.session_state.setdefault("seed", random.randint(1, 999999))
+
+def go(step_idx: int):
+    st.session_state.step = max(0, min(step_idx, len(STEPS) - 1))
+    st.rerun()
+
+def stepper():
+    dots = []
+    for i in range(len(STEPS)):
+        cls = "stepDot on" if i <= st.session_state.step else "stepDot"
+        dots.append(f"<span class='{cls}'></span>")
     st.markdown(
-        f"""
+        f"<div class='stepper'>{''.join(dots)}"
+        f"<span class='stepLabel'>{STEPS[st.session_state.step]} ({st.session_state.step+1}/{len(STEPS)})</span></div>",
+        unsafe_allow_html=True
+    )
+    st.progress((st.session_state.step + 1) / len(STEPS))
+
+def header(title: str, subtitle: str, pill: str):
+    st.markdown(f"""
 <div class="shell">
   <div class="card">
-    <div class="toprow">
-      <div class="brand">
-        <div class="catbadge">{CAT_SVG}</div>
-        <div>PookieBear</div>
+    <div class="pad">
+      <div class="toprow">
+        <div class="brand">
+          <div style="width:44px;height:44px;border-radius:14px;border:1px solid rgba(255,63,156,0.16);
+                      background:rgba(255,255,255,0.82);display:grid;place-items:center;">{CAT_SVG}</div>
+          <div>PookieBear</div>
+        </div>
+        <div class="pill">{pill}</div>
       </div>
-      <div class="pill">valentine edition</div>
-    </div>
 
-    <div class="title">Loading something cute…</div>
-    <div class="subtitle">Preparing one important question for <b>{GF_NAME}</b>.</div>
-  </div>
-</div>
-""",
-        unsafe_allow_html=True,
+      <div class="title">{title}</div>
+      <div class="subtitle">{subtitle}</div>
+      {"<div class='divider'></div>" if st.session_state.step > 0 else ""}
+""", unsafe_allow_html=True)
+    stepper()
+
+def footer_nav(show_back=True, show_next=True, next_label="Next"):
+    c1, c2 = st.columns(2, gap="large")
+    with c1:
+        if show_back:
+            if st.button("Back"):
+                go(st.session_state.step - 1)
+    with c2:
+        if show_next:
+            if st.button(next_label):
+                go(st.session_state.step + 1)
+
+def close_card():
+    st.markdown("</div></div></div>", unsafe_allow_html=True)
+
+# -----------------------------
+# Screens
+# -----------------------------
+init_state()
+
+# STEP 1: Boot
+if st.session_state.step == 0:
+    header(
+        title="A small experience, for one person.",
+        subtitle=f"This is a private little app designed for <b>{GF_NAME}</b>. "
+                 f"It takes ~60 seconds and ends with one question.",
+        pill="pink • clean • safe"
     )
+    close_card()
 
+    st.markdown("<div class='small'>Loading modules…</div>", unsafe_allow_html=True)
     p = st.progress(0)
     for i in range(100):
-        time.sleep(0.010)
+        time.sleep(0.008)
         p.progress(i + 1)
 
-    if st.button("Continue"):
-        st.session_state.stage = "question"
-        st.rerun()
+    st.markdown("<div class='kpiRow'>"
+                "<div class='kpi'><div class='k'>Vibe</div><div class='v'>Soft</div></div>"
+                "<div class='kpi'><div class='k'>Theme</div><div class='v'>Pink / White</div></div>"
+                "<div class='kpi'><div class='k'>Outcome</div><div class='v'>Happiness</div></div>"
+                "</div>", unsafe_allow_html=True)
 
-def question_screen():
-    st.markdown(
-        f"""
-<div class="shell">
-  <div class="card">
-    <div class="toprow">
-      <div class="brand">
-        <div class="catbadge">{CAT_SVG}</div>
-        <div>PookieBear</div>
-      </div>
-      <div class="pill">pink • clean • serious</div>
-    </div>
+    st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
+    st.markdown('<div class="primaryWrap">', unsafe_allow_html=True)
+    if st.button("Start"):
+        go(1)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    <div class="title">{GF_NAME}, will you be my Valentine?</div>
-    <div class="subtitle">No pressure. But the “no” option may behave… oddly.</div>
-
-    <div class="grid">
-      <div id="yes-slot"></div>
-      <div id="no-slot"></div>
-    </div>
-
-    <div class="note">Tip: the “no” button is shy and refuses accountability.</div>
-  </div>
-</div>
-""",
-        unsafe_allow_html=True,
+# STEP 2: Passport
+elif st.session_state.step == 1:
+    header(
+        title="Pookie Passport",
+        subtitle="Tiny details, but they make it feel personal. Fill these quickly (or skip with anything).",
+        pill="step 2"
     )
 
-    # Put YES button in first column (Streamlit)
-    c1, c2 = st.columns([1.15, 0.85], gap="large")
-    with c1:
-        st.markdown('<div class="primary">', unsafe_allow_html=True)
-        if st.button("Yes, be my Valentine"):
-            st.session_state.stage = "yes"
+    with st.form("passport_form", clear_on_submit=False):
+        nickname = st.text_input("What do I call you?", value=st.session_state.passport["nickname"], placeholder="e.g., pookie / baby / Dipika")
+        snack = st.text_input("Your comfort snack", value=st.session_state.passport["fav_snack"], placeholder="e.g., chocolate / chips / ice cream")
+        color = st.selectbox("Your favorite color", ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Green", "Other"],
+                             index=0 if st.session_state.passport["fav_color"] == "" else
+                             ["", "Pink", "White", "Black", "Blue", "Purple", "Red", "Green", "Other"].index(st.session_state.passport["fav_color"]))
+        vibe = st.selectbox("Today’s vibe", ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"],
+                            index=0 if st.session_state.passport["vibe"] == "" else
+                            ["", "Soft", "Cute", "Elegant", "Chaotic", "Sleepy", "Romantic"].index(st.session_state.passport["vibe"]))
+        submitted = st.form_submit_button("Save passport")
+
+    if submitted:
+        st.session_state.passport = {"nickname": nickname.strip(), "fav_snack": snack.strip(), "fav_color": color, "vibe": vibe}
+        st.success("Saved.")
+
+    close_card()
+
+    footer_nav(show_back=True, show_next=True, next_label="Continue")
+
+# STEP 3: Compatibility quiz (longer, polished)
+elif st.session_state.step == 2:
+    header(
+        title="Compatibility Check",
+        subtitle="This is not science. This is pookie logic. Answer 4 quick questions.",
+        pill="step 3"
+    )
+
+    if not st.session_state.quiz["done"]:
+        with st.form("quiz_form"):
+            q1 = st.radio("Pick a date style", ["Cozy café", "Movie night", "Walk + photos", "Fancy dinner"], index=0)
+            q2 = st.radio("Pick a gift vibe", ["Handwritten note", "Chocolate", "Flowers", "A surprise plan"], index=0)
+            q3 = st.radio("Pick a music mood", ["Soft + calm", "Pop", "Bollywood", "Anything if it's together"], index=0)
+            q4 = st.radio("Pick a pet energy", ["Cat energy", "Golden retriever energy", "Both", "Sleepy panda"], index=0)
+            done = st.form_submit_button("Calculate score")
+
+        if done:
+            # simple deterministic scoring (bug-safe, no random surprises)
+            score = 70
+            if q1 in ["Cozy café", "Movie night"]:
+                score += 10
+            if q2 in ["Handwritten note", "A surprise plan"]:
+                score += 10
+            if q3 == "Anything if it's together":
+                score += 10
+            if q4 == "Cat energy":
+                score += 10
+            score = min(score, 100)
+
+            st.session_state.quiz = {"score": score, "done": True}
+            st.rerun()
+
+    else:
+        score = st.session_state.quiz["score"]
+        st.markdown(f"<div class='kpiRow'>"
+                    f"<div class='kpi'><div class='k'>Compatibility</div><div class='v'>{score}%</div></div>"
+                    f"<div class='kpi'><div class='k'>Risk</div><div class='v'>Falling harder</div></div>"
+                    f"<div class='kpi'><div class='k'>Verdict</div><div class='v'>Approved</div></div>"
+                    f"</div>", unsafe_allow_html=True)
+        st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+
+        nick = st.session_state.passport.get("nickname") or GF_NAME
+        snack = st.session_state.passport.get("fav_snack") or "something sweet"
+        st.info(f"Result: {nick} + {YOUR_NAME} = dangerous levels of cute. Reward: {snack}.")
+
+        if st.button("Recalculate (just for fun)"):
+            st.session_state.quiz = {"score": 0, "done": False}
+            st.rerun()
+
+    close_card()
+    footer_nav(show_back=True, show_next=True, next_label="Continue")
+
+# STEP 4: Pinky Promise (longer)
+elif st.session_state.step == 3:
+    header(
+        title="Pinky Promise",
+        subtitle="Pick what you want on Valentine’s. I’ll treat it like a contract.",
+        pill="step 4"
+    )
+
+    ideas = st.multiselect(
+        "Choose your perfect plan",
+        ["Café + dessert", "Flowers", "Movie night", "Walk + photos", "A surprise itinerary", "Stay in + cozy night", "Fancy dinner"],
+        default=st.session_state.promise["ideas"],
+    )
+    st.session_state.promise["ideas"] = ideas
+
+    nick = st.session_state.passport.get("nickname") or GF_NAME
+    vibe = st.session_state.passport.get("vibe") or "Soft"
+    color = st.session_state.passport.get("fav_color") or "Pink"
+
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='small'><b>Pookie Contract</b><br>"
+        f"I, <b>{YOUR_NAME}</b>, agree to deliver a <b>{vibe}</b> day for <b>{nick}</b>.<br>"
+        f"Theme: <b>{color}</b>. Chosen plan: <b>{', '.join(ideas) if ideas else 'to be decided together'}</b>.</div>",
+        unsafe_allow_html=True
+    )
+
+    close_card()
+    footer_nav(show_back=True, show_next=True, next_label="Continue")
+
+# STEP 5: Final Question (best part)
+else:
+    nick = st.session_state.passport.get("nickname") or GF_NAME
+
+    header(
+        title=f"{nick}, one last screen.",
+        subtitle="This is the actual question. The rest was just to make you smile.",
+        pill="final"
+    )
+
+    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+
+    st.markdown(
+        f"<div class='title' style='font-size:34px;margin-top:0'>Will you be my Valentine?</div>",
+        unsafe_allow_html=True
+    )
+    st.markdown("<div class='small'>The “no” button has… opinions.</div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
+    left, right = st.columns([1.25, 0.75], gap="large")
+    with left:
+        st.markdown('<div class="primaryWrap">', unsafe_allow_html=True)
+        if st.button("Yes, I will"):
+            st.session_state.final_yes = True
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-    with c2:
-        # Real moving NO button (JS), styled to match the card
+        st.markdown("<div class='small'>Clicking yes triggers the official confirmation card.</div>", unsafe_allow_html=True)
+
+    with right:
+        # Escaping NO button (JS). This is stable and self-contained.
         st.components.v1.html(
             """
 <div style="
-  position: relative;
-  height: 76px;
+  height: 120px;
   border-radius: 18px;
   border: 1px solid rgba(36,26,34,0.10);
   background: rgba(255,255,255,0.92);
-  box-shadow: 0 14px 34px rgba(255, 63, 156, 0.10);
-  overflow: hidden;
+  box-shadow: 0 14px 34px rgba(255,63,156,0.10);
+  position: relative;
+  overflow:hidden;
+  padding: 14px;
 ">
+  <div style="font-weight:900; color: rgba(36,26,34,0.86); margin-bottom:10px;">No (if you can)</div>
   <button id="noBtn" style="
-    position:absolute;
-    left: 18%;
-    top: 10px;
-    height: 56px;
-    padding: 0 16px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 63, 156, 0.22);
-    background: rgba(255, 63, 156, 0.08);
-    font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    font-weight: 800;
-    font-size: 16px;
+    position:absolute; left: 18%; top: 56px;
+    height: 44px; padding: 0 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,63,156,0.22);
+    background: rgba(255,63,156,0.08);
+    font-weight: 900; font-size: 14px;
     color: rgba(36,26,34,0.92);
     cursor: pointer;
     transition: transform .12s ease, opacity .18s ease, filter .18s ease;
+    will-change: left, transform, opacity;
   ">No</button>
 
-  <div id="status" style="
-    position:absolute; left:12px; bottom:8px;
-    font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    font-size: 12px; color: rgba(111,95,106,0.95);
-  ">Hover to try.</div>
+  <div id="msg" style="
+    position:absolute; left:14px; bottom:10px;
+    font-size:12px; color: rgba(111,95,106,0.95);
+  ">Hover near it.</div>
 </div>
 
 <script>
 (function(){
   const btn = document.getElementById("noBtn");
-  const status = document.getElementById("status");
-  let tries = 0;
+  const msg = document.getElementById("msg");
+  let t = 0;
 
-  function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+  function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
   function rand(min,max){ return Math.random()*(max-min)+min; }
 
   function move(){
-    // keep inside container
-    const x = rand(8, 62);  // percent
+    const x = rand(8, 70);
     btn.style.left = x + "%";
-    btn.style.top  = "10px";
   }
-
-  function setText(){
-    const t = [
-      "Not today.",
-      "Nope.",
-      "That’s not available.",
-      "Please choose the other button.",
-      "This option has left the chat."
+  function setMsg(){
+    const lines = [
+      "No is under maintenance.",
+      "Nice try.",
+      "It’s shy.",
+      "Please press yes.",
+      "Option removed."
     ];
-    status.textContent = t[Math.min(tries, t.length-1)];
+    msg.textContent = lines[Math.min(t, lines.length-1)];
   }
-
   function escalate(){
-    // progressively harder to click
-    if(tries === 1){
-      btn.textContent = "Nope";
-      btn.style.transform = "scale(0.92)";
-    } else if(tries === 2){
-      btn.textContent = "Still no";
-      btn.style.transform = "scale(0.84) rotate(-2deg)";
-    } else if(tries === 3){
-      btn.textContent = "…";
-      btn.style.filter = "blur(1.2px)";
-      btn.style.transform = "scale(0.76) rotate(2deg)";
-    } else if(tries === 4){
-      btn.style.opacity = "0.45";
-      btn.style.transform = "scale(0.68)";
-      btn.textContent = "";
-    } else if(tries >= 5){
-      btn.style.opacity = "0";
-      btn.style.pointerEvents = "none";
-    }
+    if(t===1){ btn.textContent="Nope"; btn.style.transform="scale(0.92)"; }
+    else if(t===2){ btn.textContent="…"; btn.style.transform="scale(0.84) rotate(-2deg)"; }
+    else if(t===3){ btn.style.filter="blur(1.2px)"; btn.style.transform="scale(0.76) rotate(2deg)"; }
+    else if(t===4){ btn.style.opacity="0.45"; btn.style.transform="scale(0.68)"; btn.textContent=""; }
+    else if(t>=5){ btn.style.opacity="0"; btn.style.pointerEvents="none"; msg.textContent="No option has left."; }
   }
 
-  btn.addEventListener("mouseenter", ()=>{
-    tries = clamp(tries + 1, 0, 99);
-    move(); setText(); escalate();
+  // run away when mouse gets close
+  const box = btn.parentElement;
+  box.addEventListener("mousemove", (e)=>{
+    if(btn.style.pointerEvents==="none") return;
+    const r = btn.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width/2);
+    const dy = e.clientY - (r.top + r.height/2);
+    const d = Math.sqrt(dx*dx + dy*dy);
+    if(d < 70){
+      t = clamp(t+1, 0, 99);
+      move(); setMsg(); escalate();
+    }
   });
 
   btn.addEventListener("click", ()=>{
-    tries = clamp(tries + 2, 0, 99);
-    move(); setText(); escalate();
+    t = clamp(t+2, 0, 99);
+    move(); setMsg(); escalate();
   });
 
   setTimeout(move, 200);
 })();
 </script>
 """,
-            height=92,
+            height=140,
         )
 
-def yes_screen():
-    st.markdown(
-        f"""
+    close_card()
+
+    # YES result card (Streamlit-only, stable)
+    if st.session_state.final_yes:
+        st.balloons()
+        ideas = st.session_state.promise.get("ideas") or []
+        plan = ", ".join(ideas) if ideas else "to be decided together"
+        snack = st.session_state.passport.get("fav_snack") or "something sweet"
+
+        st.markdown(f"""
 <div class="shell">
   <div class="card">
-    <div class="toprow">
-      <div class="brand">
-        <div class="catbadge">{CAT_SVG}</div>
-        <div>PookieBear</div>
+    <div class="pad">
+      <div class="toprow">
+        <div class="brand">
+          <div style="width:44px;height:44px;border-radius:14px;border:1px solid rgba(255,63,156,0.16);
+                      background:rgba(255,255,255,0.82);display:grid;place-items:center;">{CAT_SVG}</div>
+          <div>PookieBear</div>
+        </div>
+        <div class="pill">confirmed</div>
       </div>
-      <div class="pill">confirmed</div>
+
+      <div class="title" style="font-size:36px">It’s official.</div>
+      <div class="subtitle"><b>{GF_NAME}</b> just made <b>{YOUR_NAME}</b> extremely happy.</div>
+
+      <div class="kpiRow">
+        <div class="kpi"><div class="k">Date</div><div class="v">Feb 14</div></div>
+        <div class="kpi"><div class="k">Plan</div><div class="v">{plan}</div></div>
+        <div class="kpi"><div class="k">Bonus</div><div class="v">{snack}</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="small">Send me a screenshot of this screen.</div>
     </div>
-
-    <div class="title">It’s a yes.</div>
-    <div class="subtitle"><b>{GF_NAME}</b> just made <b>{YOUR_NAME}</b> extremely happy.</div>
-
-    <div style="
-      margin-top: 16px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 63, 156, 0.16);
-      background: rgba(255, 255, 255, 0.86);
-      color: rgba(36,26,34,0.92);
-      font-weight: 700;
-    ">
-      Feb 14 • all day • you + me
-    </div>
-
-    <div class="note" style="margin-top:14px;">Send me a screenshot.</div>
   </div>
 </div>
-""",
-        unsafe_allow_html=True,
-    )
+""", unsafe_allow_html=True)
 
-    if st.button("Replay"):
-        st.session_state.stage = "boot"
-        st.rerun()
-
-# -----------------------------
-# Router
-# -----------------------------
-if st.session_state.stage == "boot":
-    boot_screen()
-elif st.session_state.stage == "question":
-    question_screen()
-else:
-    yes_screen()
+        c1, c2 = st.columns(2, gap="large")
+        with c1:
+            if st.button("Replay the whole experience"):
+                # reset cleanly (bug-free)
+                for k in ["step", "passport", "quiz", "promise", "final_yes", "seed"]:
+                    if k in st.session_state:
+                        del st.session_state[k]
+                st.rerun()
+        with c2:
+            if st.button("Just go back"):
+                st.session_state.final_yes = False
+                go(4)
